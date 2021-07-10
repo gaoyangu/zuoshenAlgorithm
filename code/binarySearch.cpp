@@ -1,38 +1,14 @@
-# 左神数据结构算法（基础到高级篇）
-## 基础
-### 1.认识复杂度和简单排序算法
-#### 1.1 异或运算
-- 在一个整型数组中，只有一种数出现了奇数次，其他数都出现了偶数次，如何找到这一种数。
-```cpp
-void printOddTimesNum1(vector<int> & arr)
-{
-    int eor = 0;
-    for(int cur : arr)
-        eor ^= cur;
-    cout << eor << endl;
-}
-```
-- 有两种数出现了奇数次，其他数都出现了偶数次，如何找到这两种数。
-```cpp
-void printOddTimesNum2(vector<int> & arr)
-{
-    int eor = 0;
-    for(int cur : arr)
-        eor ^= cur;
-    // eor = a^b;
-    // eor != 0;    -->    eor 必然有一个位置上是1
-    int rightOne = eor & (~eor + 1);    //提取出最右侧的1
-    int onlyOne = 0;    // eor'
-    for(int cur : arr){
-        if(cur & rightOne == 0)
-            onlyOne ^= cur;
-    }
-    cout << eor << "," << (eor ^ onlyOne) << endl;  
-}
-```
-#### 1.2 二分法
-- 一个有序数组，寻找某个数num是否存在。
-```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+/*
+* 二分法：
+    1. 一个有序数组，寻找某个数num是否存在
+    2. 在一个有序数组中，找>=某个数num最左侧的位置或<=某个数num最右侧的位置
+    3. 数组无序，任何两个相邻数一定不相等，求局部最小值
+*/
+
+//一个有序数组，寻找某个数num是否存在
 int binarySearch(const vector<int> & arr, const int & num)
 {
     int low = 0;
@@ -49,9 +25,8 @@ int binarySearch(const vector<int> & arr, const int & num)
     }
     return -1;  //not found
 }
-```
-- 在一个有序数组中，找>=某个数num最左侧的位置。
-```cpp
+
+//在一个有序数组中，找>=某个数num最左侧的位置
 int binarySearch_01(const vector<int> & arr, const int & num)
 {
     int low = 0;
@@ -69,9 +44,8 @@ int binarySearch_01(const vector<int> & arr, const int & num)
     }
     return index;
 }
-```
-- 数组无序，任何两个相邻数一定不相等，求局部最小值
-```cpp
+
+//数组无序，任何两个相邻数一定不相等，求局部最小值
 int binarySearch_02(const vector<int> & arr)
 {
     if(arr.size() < 2)
@@ -97,4 +71,18 @@ int binarySearch_02(const vector<int> & arr)
             high = mid - 1;
     }
 }
-```
+
+int main()
+{
+    vector<int> a;
+    a.push_back(3);
+    a.push_back(2);
+    a.push_back(0);
+    a.push_back(1);
+    a.push_back(9);
+    for (int i = 0; i < a.size(); i++)
+        cout << a[i] << endl;
+    
+    cout << binarySearch_02(a);
+    return 0;
+}
