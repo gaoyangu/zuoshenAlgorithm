@@ -1,17 +1,16 @@
 #include <iostream>
 #include <vector>
+#include <cstdlib> 
 using namespace std;
 
-void swap(vector<int> & arr, int i, int j)
-{
-   int tmp = arr[i];
+void swap(vector<int> & arr, int i, int j){
+    int tmp = arr[i];
     arr[i] = arr[j];
     arr[j] = tmp; 
 }
 
 //选择排序
-void selectionSort(vector<int> & arr)
-{
+void selectionSort(vector<int> & arr){
     if( arr.size() < 2){
         return;
     }
@@ -25,8 +24,7 @@ void selectionSort(vector<int> & arr)
 }
 
 //冒泡排序
-void bubbleSort(vector<int> & arr)
-{
+void bubbleSort(vector<int> & arr){
     if( arr.size() < 2){
         return;
     } 
@@ -40,8 +38,7 @@ void bubbleSort(vector<int> & arr)
 }
 
 //插入排序
-void insertionSor(vector<int> & arr)
-{
+void insertionSor(vector<int> & arr){
     if (arr.size() < 2){
         return;
     }
@@ -53,8 +50,7 @@ void insertionSor(vector<int> & arr)
 }
 
 //归并排序
-void merge(vector<int>& arr, int L, int M, int R)
-{
+void merge(vector<int>& arr, int L, int M, int R){
     vector<int> help;   //！额外空间复杂度
     //int i = 0;
     int p1 = L;
@@ -76,8 +72,7 @@ void merge(vector<int>& arr, int L, int M, int R)
     }
 }
 
-void process(vector<int>& arr, int L, int R)
-{
+void process(vector<int>& arr, int L, int R){
     if (L == R){
         return;
     }
@@ -87,12 +82,38 @@ void process(vector<int>& arr, int L, int R)
     merge(arr, L, mid, R);
 }
 
-void mergeSort(vector<int> & arr)
-{
+void mergeSort(vector<int> & arr){
     if(arr.size() < 2){
         return;
     }
     process(arr, 0, arr.size() - 1);
+}
+
+//快速排序
+//返回值：等于区域的左边界和有边界
+vector<int> partition(vector<int> & arr, int L, int R){
+    int less = L - 1;   // <区右边界
+    int more = R;       // >区左边界
+    while (L < more){
+        if(arr[L] < arr[R]){        //当前值 < 划分值
+            swap(arr, ++less, L++);
+        }else if(arr[L] > arr[R]){  //当前值 > 划分值
+            swap(arr, --more, L);
+        }else{
+            L++;
+        }
+    }
+    swap(arr, more, R);
+    return {less + 1, more};
+}
+
+void quickSort(vector<int> & arr, int L, int R){
+    if(L < R){
+        swap(arr, L + (rand()%(R - L + 1)) + 1, R);
+        vector<int> p = partition(arr, L, R);
+        quickSort(arr, L, p[0] - 1);
+        quickSort(arr, p[1] + 1, R);
+    }
 }
 
 int main()
@@ -107,8 +128,9 @@ int main()
 
     process(a, 0, a.size()-1);
 
-    for(int i = 0; i < a.size(); i++)
+    for(int i = 0; i < a.size(); i++){
         cout << a[i] << endl;
+    }
 
     return 0;
 }

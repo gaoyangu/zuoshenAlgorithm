@@ -125,12 +125,65 @@ int process(const vector<int> & arr, int L, int R)
 5: 1 + 3 + 4 + 2
 all = 0 + 1 + 4 + 1 + 10 = 16
 ```
+```cpp
+int merge(vector<int> & arr, int L, int M, int R){
+    vector<int> help;
+    int p1 = L;
+    int p2 = M + 1;
+    int res = 0;
+    while (p1 <= M && p2 <= R){
+        res += arr[p1] < arr[p2] ? (R - p2 + 1) * arr[p1] : 0;
+        help.push_back(arr[p1] < arr[p2] ? arr[p1++] : arr[p2++]);
+    }
+    while(p1 <= M){
+        help.push_back(p1++);
+    }
+    while (p2 <= R){
+        help.push_back(p2++);
+    }
+    for(int i = 0; i < help.size(); i++){
+        arr[L + i] = help[i];
+    }
+    return res;
+} 
 
-### 2.3 荷兰国旗问题
-给定一个数组arr和一个数num，请把小于等于num的数放在数组的左边，大于num的数放在数组的右边。要求时间复杂度为O(n)，空间复杂度为O(1)。
+int process(vector<int> & arr, int L, int R){
+    if(L == R)
+        return 0;
+    int mid = L + ((R - L) >> 1);
+    return process(arr, L, mid) + process(arr, mid + 1, R) + merge(arr, L, mid, R);
+}
 
+int smallSum(vector<int> & arr){
+    if(arr.size() < 2){
+        return 0;
+    }
+    return process(arr, 0, arr.size() - 1);
+}
+```
 
-给定一个数组arr和一个数num，请把小于num的数放在数组的左边，等于num的数放在数组的中间，大于num的数放在数组的右边。要求时间复杂度为O(n)，空间复杂度为O(1)。
+#### 2.3 快速排序
 
-### 2.4 快速排序
+给定一个数组arr和一个数num，请把小于等于num的数放在数组的左边，大于num的数放在数组的右边。要求时间复杂度为O(N)，空间复杂度为O(1)。
+
+分两种情况：
+
+(1) arr[i] <= num，arr[i]和 <=区的下一个数交换，<=区右扩，i++
+
+(2) arr[i] > num，i++
+
+**荷兰国旗问题**：
+
+给定一个数组arr和一个数num，请把小于num的数放在数组的左边，等于num的数放在数组的中间，大于num的数放在数组的右边。要求时间复杂度为O(N)，空间复杂度为O(1)。
+
+分三种情况：
+
+(1) arr[i] < num，arr[i]和 <区下一个交换，<区右扩，i++
+
+(2) arr[i] == num，i++
+
+(3) arr[i] > num，arr[i]和 >区前一个交换，>区左扩，i不变
+
+#### 2.4 堆排序
+已知一个几乎有序的数组，几乎有序是指，如果把数组排好顺序的话，每个元素移动的距离可以不超过k，并且k相对于数组来说比较小。请选择一个合适的排序算法针对这个数据进行排序。
 
