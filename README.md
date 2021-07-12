@@ -98,3 +98,39 @@ int binarySearch_02(const vector<int> & arr)
     }
 }
 ```
+
+### 2.认识O(NlogN)的排序
+#### 2.1 使用递归求数组的最大值
+```cpp
+int process(const vector<int> & arr, int L, int R)
+{
+    if(L == R)  //base case
+        return arr[L];
+    int mid = L + ((R - L) >> 1);
+    int leftMax = process(arr, L, mid);
+    int rightMax = process(arr, mid+1, R);
+    return max(leftMax, rightMax);
+}
+```
+#### 2.2 归并排序
+小和问题：在一个数组中，每一个数左边比当前数小的数累加起来，叫做这个数组的小和。
+
+例：
+```cpp
+[1, 3, 4, 2, 5]
+1: 0
+3: 1
+4: 1 + 3
+2: 1
+5: 1 + 3 + 4 + 2
+all = 0 + 1 + 4 + 1 + 10 = 16
+```
+
+### 2.3 荷兰国旗问题
+给定一个数组arr和一个数num，请把小于等于num的数放在数组的左边，大于num的数放在数组的右边。要求时间复杂度为O(n)，空间复杂度为O(1)。
+
+
+给定一个数组arr和一个数num，请把小于num的数放在数组的左边，等于num的数放在数组的中间，大于num的数放在数组的右边。要求时间复杂度为O(n)，空间复杂度为O(1)。
+
+### 2.4 快速排序
+

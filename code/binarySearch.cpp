@@ -15,7 +15,7 @@ int binarySearch(const vector<int> & arr, const int & num)
     int high = arr.size() - 1;
     while (low < high){
         //int mid = (low + high) / 2; 
-        int mid = low + (high - low) / 2;
+        int mid = low + ((high - low) >> 1);
         if(arr[mid] < num)
             low = mid + 1;
         else if(arr[mid] > num)
@@ -34,7 +34,7 @@ int binarySearch_01(const vector<int> & arr, const int & num)
     int index = -1;
     while (low <= high){
         //int mid = (low + high) / 2; 
-        int mid = low + (high - low) / 2;
+        int mid = low + ((high - low) >> 1);
         if(arr[mid] >= num){
             index = mid;
             high = mid - 1;
@@ -61,7 +61,7 @@ int binarySearch_02(const vector<int> & arr)
 
     while (low < high){
         //int mid = (low + high) / 2; 
-        int mid = low + (high - low) / 2;
+        int mid = low + ((high - low) >> 1);
         //判断 mid 处是否为局部最小值
         if(arr[mid] < arr[mid + 1] && arr[mid] < arr[mid - 1])
             return mid;
