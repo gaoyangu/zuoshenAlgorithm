@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib> 
+#include <algorithm> 
 using namespace std;
 
 void swap(vector<int> & arr, int i, int j){
@@ -71,7 +72,6 @@ void merge(vector<int>& arr, int L, int M, int R){
         arr[L + i] = help[i];
     }
 }
-
 void process(vector<int>& arr, int L, int R){
     if (L == R){
         return;
@@ -81,7 +81,6 @@ void process(vector<int>& arr, int L, int R){
     process(arr, mid + 1, R);
     merge(arr, L, mid, R);
 }
-
 void mergeSort(vector<int> & arr){
     if(arr.size() < 2){
         return;
@@ -106,13 +105,56 @@ vector<int> partition(vector<int> & arr, int L, int R){
     swap(arr, more, R);
     return {less + 1, more};
 }
-
 void quickSort(vector<int> & arr, int L, int R){
     if(L < R){
         swap(arr, L + (rand()%(R - L + 1)) + 1, R);
-        vector<int> p = partition(arr, L, R);
+        vector<int> p = partition(arr, L, R);   //根据实际的数据状况决定
         quickSort(arr, L, p[0] - 1);
         quickSort(arr, p[1] + 1, R);
+    }
+}
+
+//堆排序
+// 某个数现在处在index位置，往上继续移动
+void heapInsert(vector<int> & arr, int index){
+    while (arr[index] > arr[(index - 1) / 2]){
+        swap(arr, index, (index - 1) / 2);
+        index = (index - 1) / 2;
+    }
+}
+//某个数在index位置，能否往下移动
+void heapify(vector<int> & arr, int index, int heapSize){
+    int left = index * 2 + 1;   //左孩子的下标
+    while (left < heapSize){
+        //两个孩子中，谁的值大，把下标给largest
+        int largest = left + 1 < heapSize && arr[left + 1] > arr[left] ? left + 1 : left;
+        //父和较大的孩子之间，谁的值大，把下标给largest
+        largest = arr[largest] > arr[index] ? largest : index;
+        if(largest == index){
+            break;
+        }
+        swap(arr, largest, index);
+        index = largest;
+        left = index * 2 + 1;
+    }
+}
+void heapSort(vector<int> & arr){
+    if(arr.size() < 2){
+        return;
+    }
+    // 用户一次只给一个数: O(NlogN)
+    for (int i = 0; i < arr.size(); i++){   //O(N)
+        heapInsert(arr, i); //O(logN)
+    }
+    // 用户一次给出所有的数: O(N)
+    // for (int i = arr.size() - 1; i >= 0; i--){
+    //     heapify(arr, i, arr.size());
+    // }
+    int heapSize = arr.size();
+    swap(arr, 0, --heapSize);
+    while (heapSize > 0){   //O(N)
+        heapify(arr, 0, heapSize);  //O(logN)
+        swap(arr, 0, --heapSize);   //O(1)
     }
 }
 
@@ -125,8 +167,6 @@ int main()
     a.push_back(5);
     a.push_back(6);
     a.push_back(2);
-
-    process(a, 0, a.size()-1);
 
     for(int i = 0; i < a.size(); i++){
         cout << a[i] << endl;

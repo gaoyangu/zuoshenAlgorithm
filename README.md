@@ -185,5 +185,35 @@ int smallSum(vector<int> & arr){
 (3) arr[i] > num，arr[i]和 >区前一个交换，>区左扩，i不变
 
 #### 2.4 堆排序
+小根堆
+
 已知一个几乎有序的数组，几乎有序是指，如果把数组排好顺序的话，每个元素移动的距离可以不超过k，并且k相对于数组来说比较小。请选择一个合适的排序算法针对这个数据进行排序。
 
+思路：假设k=6，准备一个小根堆，首先遍历前7个数，小根堆的最小值一定在0位置。
+
+复杂度：O(N*logk)
+```cpp
+void sortedArrDistanceLessK(vector<int> & arr, int k){
+    vector<int> v;
+    make_heap(v.begin(), v.end(), greater<int>());
+    int index = 0;
+    for(; index <= min((int)arr.size(), k); index++){
+        v.push_back(arr[index]);
+        push_heap(v.begin(), v.end());
+    }
+    int i = 0;
+    for(; index < arr.size(); i++, index++){
+        v.push_back(arr[index]);
+        push_heap(v.begin(), v.end());
+
+        arr[i] = v[0];
+        pop_heap(v.begin(), v.end());
+        v.pop_back();  
+    }
+    while (!v.empty()){
+        arr[i++] = v[0];
+        pop_heap(v.begin(), v.end());
+        v.pop_back();  
+    }
+}
+```
