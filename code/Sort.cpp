@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstdlib> 
 #include <algorithm> 
+#include <climits>
 using namespace std;
 
 void swap(vector<int> & arr, int i, int j){
@@ -158,6 +159,62 @@ void heapSort(vector<int> & arr){
     }
 }
 
+//基数排序
+int maxbits(vector<int> & arr){
+    int max = INT_MIN;
+    for(int i = 0; i < arr.size(); i++){
+        max = max > arr[i] ? max : arr[i];
+    }
+    int res = 0;
+    while (max != 0){
+        res++;
+        max /= 10;
+    }
+    return res;
+}
+int getDigit(int a, int d){
+    int res = 0;
+    for(int i = 1; i < d; i++){
+        a /= 10;
+    }
+    return a%10;
+}
+//digit：最大值有几个十进制位
+void radixSort(vector<int> & arr, int L, int R, int digit){
+    const int radix = 10;
+    int i = 0, j = 0;
+    vector<int> bucket; //R-L+1
+    for (int d = 1; d <= digit; d++){   //有多少个十进制位，就入桶出桶多少次
+        // 10个空间
+        // count[0] 当前位(d位)是0的数字有多少个
+        // count[1] 当前位(d位)是(0和1)的数字有多少个
+        // count[2] 当前位(d位)是(0、1和2)的数字有多少个
+        // count[i] 当前位(d位)是(0~i)的数字有多少个
+        vector<int> count;  //词频表
+        for(i = L; i <= R; i++){    //个位数字 等于2 的有多少个
+            j = getDigit(arr[i], d);
+            count[j]++;
+        }
+        for(i = 1; i < radix; i++){ //前缀和 数组：个位数字 小于等于2 的有多少个
+            count[i] += count[i-1];
+        }
+        for(i = R; i >= L; i--){    //从右往左，先入桶的先出桶 
+            j = getDigit(arr[i], d);
+            bucket[count[j] - 1] = arr[i];
+            count[j]--;
+        }
+        for(i = L, j = 0; i <= R; i++, j++){
+            arr[i] = bucket[j];
+        }
+    }
+}
+void radixSort(vector<int> & arr){
+    if(arr.size() < 2){
+        return;
+    }
+    radixSort(arr, 0, arr.size() - 1, maxbits(arr));
+}
+
 int main()
 {
     vector<int> a;
@@ -171,6 +228,8 @@ int main()
     for(int i = 0; i < a.size(); i++){
         cout << a[i] << endl;
     }
+
+    cout << getDigit(168, 1) << endl;;
 
     return 0;
 }
