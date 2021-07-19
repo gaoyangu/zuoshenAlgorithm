@@ -217,3 +217,97 @@ void sortedArrDistanceLessK(vector<int> & arr, int k){
     }
 }
 ```
+### 4. 链表
+单链表的节点结构
+```cpp
+template <typename T>
+class Node{
+    T value;
+    Node *next;
+};
+```
+双链表的节点结构
+```cpp
+template <typename T>
+class Node{
+    T value;
+    Node *next;
+    Node *last;
+};
+```
+单链表和双链表结构只需要给定一个头部节点head，就可以找到剩下的所有节点。
+
+**1. 反转单向和双向链表**
+
+[题目]：分别实现反转单向链表和反转双向链表的函数
+
+[要求]：如果链表的长度为N，时间复杂度要求为O(N)，额外空间复杂度要求为O(1)
+
+反转单向链表
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+ListNode* reverseList(ListNode* head) {
+    ListNode* prev = NULL;
+    ListNode* curr = head;
+    while(curr){
+        ListNode* next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+    return prev;
+}
+```
+反转双向链表
+```cpp
+ListNode* reverseList(ListNode* head) {
+    ListNode* prev = NULL;
+    ListNode* curr = head;
+    while(curr){
+        ListNode* next = curr->next;
+        curr->next = prev;
+        curr->last = next;
+        prev = curr;
+        curr = next;
+    }
+    return prev;
+}
+```
+
+**2. 打印两个有序链表的公共部分**
+
+[题目]：给定两个有序链表的头指针head1和head2，打印两个链表的公共部分
+
+[要求]：如果链表的长度为N，时间复杂度要求为O(N)，额外空间复杂度要求为O(1)
+
+```cpp
+void printPublicList(ListNode* head1, ListNode* head2) {
+    ListNode* p1 = head1;
+    ListNode* p2 = head2;
+    while (p1 != NULL && p2 != NULL) {
+        if (p1->value == p2->value) {
+            cout << p1->value << endl;
+            p1 = p1->next;
+            p2 = p2->next;
+        }
+        else if (p1->value < p2->value) {
+            p1 = p1->next;
+        }
+        else {
+            p2 = p2->next;
+        }
+    }
+}
+```
+
+
+
