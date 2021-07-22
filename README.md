@@ -293,7 +293,7 @@ ListNode* reverseList(ListNode* head) {
 void printPublicList(ListNode* head1, ListNode* head2) {
     ListNode* p1 = head1;
     ListNode* p2 = head2;
-    while (p1 != NULL && p2 != NULL) {
+    while (p1 != nullptr && p2 != nullptr) {
         if (p1->value == p2->value) {
             cout << p1->value << endl;
             p1 = p1->next;
@@ -308,6 +308,376 @@ void printPublicList(ListNode* head1, ListNode* head2) {
     }
 }
 ```
+
+**3. 判断一个链表是否为回文结构**
+
+[题目] 给定一个单链表的头节点head，请判断该链表是否为回文结构。
+
+[例子] 1->2->1，返回true；1->2->2->1，返回true；15->6->15，返回true；1->2->3，返回false。
+
+[要求] 如果链表长度为N，时间复杂度达到O(N)，额外空间复杂度达到O(1)。
+
+方法一：全部压到栈中。额外空间复杂度O(N)
+```cpp
+bool isPalindrome1(ListNode* head) {
+    stack<ListNode*> s;
+    ListNode* cur = head;
+    while (cur != nullptr) {
+        s.push(cur);
+        cur = cur->next;
+    }
+    while (head != nullptr) {
+        if (head->value != s.top()->value) {
+            return false;
+        }
+        s.pop();
+        head = head->next;
+    }
+    return true;
+}
+```
+方法二：只把右侧压到栈中。额外空间复杂度O(N/2)
+```cpp
+bool isPalindrome2(ListNode* head) {
+    if(head == nullptr || head->next == nullptr) {
+        return true;
+    }
+    ListNode* right = head->next;
+    ListNode* cur = head;
+    while (cur->next != nullptr && cur->next->next != nullptr){
+        right = right->next;
+        cur = cur->next->next;
+    }
+    stack<ListNode*> s;
+    while (right != nullptr){
+        s.push(right);
+        right = right->next;
+    }
+    while (!s.empty()){
+        if (head->value != s.top()->value) {
+            return false;
+        }
+        s.pop();
+        head = head->next;
+    }
+    return true;
+}
+```
+方法三：额外空间复杂度O(1)
+```cpp
+bool isPalindrome3(ListNode* head) {
+    if (head == nullptr || head->next == nullptr) {
+        return true;
+    }
+
+    ListNode* n1 = head;
+    ListNode* n2 = head;
+    while (n2->next != nullptr && n2->next->next != nullptr) {
+        n1 = n1->next;          // n1 -> mid
+        n2 = n2->next->next;    // n2 -> end
+    }
+    n2 = n1->next;      // n2 -> right part first node
+    n1->next = nullptr; // mid.next -> null
+    ListNode* n3 = nullptr;
+    while (n2 != nullptr){  // right part convert
+        n3 = n2->next;
+        n2->next = n1;
+        n1 = n2;
+        n2 = n3;
+    }
+    n3 = n1;
+    n2 = head;
+
+    bool res = true;
+    while (n1 != nullptr && n2 != nullptr){ // check palindrome
+        if (n1->value != n2->value) {
+            res = false;
+            break;
+        }
+        n1 = n1->next;
+        n2 = n2->next;
+    }
+
+    n1 = n3->next;
+    n3->next = nullptr;
+    while (n1 != nullptr){  // recover list
+        n2 = n1->next;
+        n1->next = n3;
+        n3 = n1;
+        n1 = n2;
+    }
+    return res;
+}
+```
+
+**4. 将单向链表按某值划分成左边小、中间相等、右边大的形式**
+
+[题目]：给定一个单链表的头节点head，节点的值类型是整型，再给定一个整数pivot。实现一个调整链表的函数，将链表调整为左部分都是值小于pivot的节点，中间部分都是值等于pivot的节点，右部分都是值大于pivot的节点。
+
+[进阶]：在实现原问题功能的基础上增加如下的要求
+
+[要求]：调整后所有小于pivot的节点之间的相对顺序和调整前一样
+
+[要求]：调整后所有等于pivot的节点之间的相对顺序和调整前一样
+
+[要求]：调整后所有大于pivot的节点之间的相对顺序和调整前一样
+
+[要求]：时间复杂度请达到O(N)，额外空间复杂度请达到O(1)
+
+笔试：
+```cpp
+申请一个Node类型的数组，在数组上进行partitation
+```
+面试：
+```cpp
+ListNode* listPartition2(ListNode* head, int pivot){
+    ListNode* sH = nullptr;
+    ListNode* sT = nullptr;
+    ListNode* eH = nullptr;
+    ListNode* eT = nullptr;
+    ListNode* bH = nullptr;
+    ListNode* bT = nullptr;
+
+    ListNode* next = nullptr;
+    while (head != nullptr){
+        next = head->next;
+        head->next = nullptr;
+        if (head->value < pivot) {
+            if (sH == nullptr) {
+                sH = head;
+                sT = head;
+            }
+            else {
+                sT->next = head;    //将旧的尾巴的next连向当前节点
+                sT = head;          //将当前节点变成新的尾巴
+            }
+        }
+        else if (head->value == pivot) {
+            if (eH == nullptr) {
+                eH = head;
+                eT = head;
+            }
+            else {
+                eT->next = head;
+                eT = head;
+            }
+        }
+        else {
+            if (bH == nullptr) {
+                bH = head;
+                bT = head;
+            }
+            else {
+                bT->next = head;
+                bT = head;
+            }
+        }
+        head = next;
+    }
+    // small and equal reconnect
+    if (sT != nullptr) {    //如果有小于区域
+        sT->next = eH;
+        eT = (eT == nullptr ? sT : eT);
+    }
+    // all reconnect
+    if (eT != nullptr) {
+        eT->next = bH;
+    }
+    return sH != nullptr ? sH : (eH != nullptr ? eH : bH);
+}  
+```
+
+**5. 复制含有随机指针节点的链表**
+
+[题目]：一种特殊的单链表节点类描述如下
+```cpp
+class Node{
+    Node(int val){
+        value = val;
+    }
+
+    int value;
+    Node *next;
+    Node *rand;
+}
+```
+rand指针是单链表节点结构中新增的指针， rand可能指向链表中的任意一个节点，也可能指向null。给定一个由Node节点类型组成的无环单链表的头节点head，请实现一个函数完成这个链表的复制，并返回复制的新链表的头节点。
+
+[要求]：时间复杂度O(N)，额外空间复杂度O(1)
+
+使用哈希表，额外空间复杂度：O(N)
+```cpp
+ListNode* copyListWithRand1(ListNode* head) {
+    unordered_map<ListNode*, ListNode*> map;    //key: old node, value: new node
+    ListNode* cur = head;
+    while (cur != nullptr){
+        map.insert(cur, new ListNode(cur->value));
+        cur = cur->next;
+    }
+    cur = head;
+    while (cur != nullptr){
+        map.at(cur)->next = map.at(cur->next);
+        map.at(cur)->rand = map.at(cur->rand);
+        cur = cur->next;
+    }
+    return map.at(head);
+}
+```
+
+额外空间复杂度：O(1)
+```cpp
+ListNode* copyListWithRand2(ListNode* head) {
+    if (head == nullptr) {
+        return nullptr;
+    }
+    ListNode* cur = head;
+    ListNode* next = nullptr;
+    while (cur != nullptr) {
+        next = cur->next;
+        cur->next = new ListNode(cur->value);
+        cur->next->next = next;
+        cur = next;
+    }
+    cur = head;
+    ListNode* curCopy = nullptr;
+    while (cur != nullptr){
+        next = cur->next->next;
+        curCopy = cur->next;
+        curCopy->rand = cur->rand != nullptr ? cur->rand->next : nullptr;
+        cur = next;
+    }
+    ListNode* res = head->next;
+    cur = head;
+    while (cur != nullptr){
+        next = cur->next->next;
+        curCopy = cur->next;
+        cur->next = next;
+        curCopy->next = (next != nullptr ? next->next : nullptr);
+        cur = next;
+    }
+    return res;
+}
+```
+
+**6. 两个单链表相交的一系列问题**
+
+[题目]：给定两个可能有环也可能无环的单链表，头节点head1和head2。请实现一个函数，如果两个链表相交，请返回相交的第一个节点。如果不相交，返回null
+
+[要求]：如果两个链表长度之和为N，时间复杂度请达到O(N)，额外空间复杂度请达到O(1)
+
+```cpp
+// 找到链表第一个入环节点，如果无环，返回null
+ListNode* getLoopNode(ListNode* head) {
+    if (head == nullptr || head->next == nullptr || head->next->next == nullptr) {
+        return nullptr;
+    }
+    ListNode* n1 = head->next;          // n1 -> slow
+    ListNode* n2 = head->next->next;    // n2 -> slow
+    while (n1 != n2){
+        if (n2->next == nullptr || n2->next->next == nullptr) {
+            return nullptr;
+        }
+        n2 = n2->next->next;
+        n1 = n1->next;
+    }
+    n2 = head;
+    while (n1 != n2){
+        n1 = n1->next;
+        n2 = n2->next;
+    }
+    return n1;
+}
+// 如果两个链表都无环，返回第一个相交节点，如果不相交，返回null
+ListNode* noLoop(ListNode* head1, ListNode* head2) {
+    if (head1 == nullptr || head2 == nullptr) {
+        return nullptr;
+    }
+    ListNode* cur1 = head1;
+    ListNode* cur2 = head2;
+    int n = 0;
+    while (cur1->next != nullptr){
+        n++;
+        cur1 = cur1->next;
+    }
+    while (cur2->next != nullptr) {
+        n--;
+        cur2 = cur2->next;
+    }
+    if (cur1 != cur2) {
+        return nullptr;
+    }
+    cur1 = n > 0 ? head1 : head2;
+    cur2 = (cur1 == head1 ? head2 : head1);
+    n = abs(n);
+    while (n != 0){
+        n--;
+        cur1 = cur1->next;
+    }
+    while (cur1 != cur2){
+        cur1 = cur1->next;
+        cur2 = cur2->next;
+    }
+    return cur1;
+}
+// 两个有环链表，返回第一个相交节点，不相交返回null
+ListNode* bothLoop(ListNode* head1, ListNode* loop1, ListNode* head2, ListNode* loop2) {
+    ListNode* cur1 = nullptr;
+    ListNode* cur2 = nullptr;
+    if (loop1 == loop2) {
+        cur1 = head1;
+        cur2 = head2;
+        int n = 0;
+        while (cur1 != loop1){
+            n++;
+            cur1 = cur1->next;
+        }
+        while (cur2 != loop2) {
+            n--;
+            cur2 = cur2->next;
+        }
+        cur1 = n > 0 ? head1 : head2;
+        cur2 = (cur1 == head1 ? head2 : head1);
+        n = abs(n);
+        while (n != 0) {
+            n--;
+            cur1 = cur1->next;
+        }
+        while (cur1 != cur2){
+            cur1 = cur1->next;
+            cur2 = cur2->next;
+        }
+        return cur1;
+    }
+    else {
+        cur1 = loop1->next;
+        while (cur1 != loop1) {
+            if (cur1 == loop2) {
+                return loop1;
+            }
+            cur1 = cur1->next;
+        }
+    }
+    return nullptr;
+}
+ListNode* getIntersectNode(ListNode* head1, ListNode* head2) {
+    if (head1 == nullptr || head2 == nullptr) {
+        return nullptr;
+    }
+    ListNode* loop1 = getLoopNode(head1);
+    ListNode* loop2 = getLoopNode(head2);
+    if (loop1 == nullptr && loop2 == nullptr) {
+        return noLoop(head1, head2);
+    }
+    if (loop1 != nullptr && loop2 == nullptr) {
+        return bothLoop(head1, loop1, head2, loop2);
+    }
+    return nullptr;
+}
+```
+
+
+
+
 
 
 
