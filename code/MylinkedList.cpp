@@ -320,7 +320,7 @@ ListNode* copyListWithRand1(ListNode* head) {
     unordered_map<ListNode*, ListNode*> map;    //key: old node, value: new node
     ListNode* cur = head;
     while (cur != nullptr){
-        map.insert(cur, new ListNode(cur->value));
+        map.insert(pair<ListNode*, ListNode*>(cur, new ListNode(cur->value)));
         cur = cur->next;
     }
     cur = head;
