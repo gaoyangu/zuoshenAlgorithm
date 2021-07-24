@@ -2,11 +2,14 @@
 #include <stack>
 #include <queue>
 #include <unordered_map>
+#include <unordered_set>
+#include <string>
 
 using namespace std;
 
 class Node{
 public:
+    Node(int val) : value(val) { }
     int value;
     Node* left;
     Node* right;
@@ -303,6 +306,127 @@ ReturnType process(Node* head){
 }
 bool isBalanced(Node* head){
     return process(head).isBalanced;
+}
+
+// 最低公共祖先节点
+// 方法一
+void process(Node* head, unordered_map<Node*, Node*> fatherMap){
+    if(head == nullptr){
+        return;
+    }
+    fatherMap.insert(pair<Node*, Node*>(head->left, head));
+    fatherMap.insert(pair<Node*, Node*>(head->right, head));
+    process(head->left, fatherMap);
+    process(head->right);
+}
+Node* lca(Node* head, Node* o1, Node* o2){
+    unordered_map<Node*, Node*> fatherMap;
+    fatherMap.insert(pair<Node*, Node*>(head, head));
+    process(head, fatherMap);
+    unordered_set<Node*> s;
+    Node* cur = o1;
+    while (cur != fatherMap.at(cur)){
+        s.insert(cur);
+        cur = fatherMap.at(cur);
+    }
+    s.insert(head);
+
+    cur = o2;
+    while (cur != fatherMap.at(cur)){
+        if(s.find(cur) != s.end()){
+            return cur;
+        }
+        cur = fatherMap.at(cur);
+    }
+    return head;
+}
+// 方法二
+Node* lowestAmcestor(Node* head, Node* o1, Node* o2){
+    // base case
+    if(head == nullptr || head == o1 || head == o2){
+        return head;
+    }
+    Node* left = lowestAmcestor(head->left, o1, o2);
+    Node* right = lowestAmcestor(head->right, o1, o2);
+    if(left != nullptr && right != nullptr){
+        return head;
+    }
+    return left != nullptr ? left : right;
+}
+
+// 后继节点
+Node* getLeftMost(Node* node){
+    if(node == nullptr){
+        return node;
+    }
+    while (node->left != nullptr){
+        node = node->left;
+    }
+    return node;
+}
+Node* getSuccessorNode(Node* node){
+    if(node == nullptr){
+        return node;
+    }
+    if(node->right != nullptr){
+        return getLeftMost(node->right);
+    }
+    else{
+        Node* parent = node->parent;
+        while(parent != nullptr && parent->left != node){
+            node = parent;
+            parent = node.parent;
+        }
+        return parent;
+    }
+}
+
+// 二叉树的序列化和反序列化
+string serialByPre(Node* head){
+    if(head == nullptr){
+        return "#_";
+    }
+    string res = head->value + "_";
+    res += serialByPre(head->left);
+    res += serialByPre(head->right);
+    return res;
+}
+Node* reconPreOrder(queue<string> q){
+    string value = q.front();
+    q.pop();
+    if(value == "#"){
+        return nullptr;
+    }
+    Node* head = new Node(stoi(value));
+    head->left = reconPreOrder(q);
+    head->right = reconPreOrder(q);
+    return head;
+}
+Node* reconByPreString(string preStr){
+    queue<string> q;
+    int pos = preStr.find("_");
+    while (pos != preStr.npos) {
+        string temp = preStr.substr(0, pos);
+        q.push(temp);
+        preStr = preStr.substr(pos + 1, preStr.size());
+        pos = preStr.find("_");
+    }
+    return reconPreOrder(q);
+}
+
+// 折纸问题
+// 递归过程，来到了某一个节点
+// i是节点的层数，N一共的层数，donw == true 凹，down == false 凸
+void printProcess(int i, int N, bool down){
+    if(i > N){
+        return;
+    }
+    printProcess(i+1, N, true);
+    cout << (down ? "凹" : "凸") << " ";
+    printProcess(i+1 , N, false);
+}
+void printAllfolds(int N){
+    printProcess(1, N, true);
 }
 
 int main()
