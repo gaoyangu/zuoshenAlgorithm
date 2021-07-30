@@ -180,16 +180,15 @@ set<Edge*> kruskalMST(Graph graph){
         ltmp.push_back(graph.nodes.at(i));
     }
     MySets mysets(ltmp);
-    vector<Edge*> v;
+    // vector<Edge*> v;
+    priority_queue<Edge*, vector<Edge*>, EdgeComparator()> p;
     for(Edge* edge : graph.edges){
-        v.push_back(edge);
+        p.push(edge);
     }
-    make_heap(v.begin(), v.end(), EdgeComparator());
     set<Edge*> result;
-    while(!v.empty()){
-        pop_heap(v.begin(), v.end(), EdgeComparator());
-        Edge* e = v.back();
-        v.pop_back();
+    while(!p.empty()){
+        Edge* e = p.top();
+        p.pop();
         if(!mysets.isSameSet(e->from, e->to)){
             result.insert(e);
             mysets.unionSet(e->from, e->to);
@@ -199,7 +198,8 @@ set<Edge*> kruskalMST(Graph graph){
 }
 // prim 算法
 set<Edge*> primMST(Graph graph){
-    vector<Edge*> v;
+    // vector<Edge*> v;
+    priority_queue<Edge*, vector<Edge*>, EdgeComparator()> p;
     vector<Node*> vN;
     unordered_set<Node*> s;
     set<Edge*> result;      // 依次挑选的边放在result中
@@ -210,20 +210,17 @@ set<Edge*> primMST(Graph graph){
         if(s.find(node) == s.end()){
             s.insert(node);
             for(Edge* edge : node->edges){  // 由一个点，解锁所有相连的边
-                v.push_back(edge);
+                p.push(edge);
             }
-            make_heap(v.begin(), v.end(), EdgeComparator());
-            while(!v.empty()){
-                pop_heap(v.begin(), v.end(), EdgeComparator());
-                Edge* edge = v.back();  // 弹出解锁的边中最小的边
-                v.pop_back();
+            while(!p.empty()){
+                Edge* edge = p.top();  // 弹出解锁的边中最小的边
+                p.pop();
                 Node* toNode = edge->to;    // 可能的一个新的点
                 if(s.find(toNode) == s.end()){  // 不包含的时候就是新的点
                     s.insert(toNode);
                     result.insert(edge);
                     for(Edge* newEdge : toNode->edges){
-                        v.push_back(newEdge);
-                        make_heap(v.begin(), v.end(), EdgeComparator());
+                        p.push(newEdge);
                     }
                 }
             }
