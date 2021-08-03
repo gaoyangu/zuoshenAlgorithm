@@ -267,3 +267,91 @@ unordered_map<Node*, int> dijkstral(Node* head){
     }
     return distanceMap;
 }
+// 使用堆优化 Dijkstra算法
+class NodeRecord{
+public:
+    NodeRecord(Node* n, int dis) : node(n), distance(dis) {}
+    Node* node;
+    int distance;
+};
+class NodeHeap{
+public:
+    NodeHeap(int s) : size(0) {}
+
+    bool isEmpty(){
+        return size == 0;
+    }
+    bool isEntered(Node* node){
+        return heapIndexMap.find(node) != heapIndexMap.end();
+    }
+    bool inHeap(Node* node){
+        return isEntered(node) && heapIndexMap.at(node) != -1;
+    }
+    void swap(int index1, int index2){
+        heapIndexMap.at(nodes[index1]) = index2;
+        heapIndexMap.at(nodes[index2]) = index1;
+        Node* tmp = nodes[index1];
+        nodes[index1] = nodes[index2];
+        nodes[index2] = tmp;
+    }
+    void insertHeapify(Node* node, int index){
+        while (distanceMap.at(nodes[index]) < distanceMap.at(nodes[(index - 1)/2])){
+            swap(index, (index - 1) / 2);
+            index = (index - 1) / 2;
+        }
+    }
+    void heapify(int index, int size){
+        int left = index * 2 + 1;
+        while (left < size){
+            int smallest = left + 1 < size && distanceMap.at(nodes[left + 1]) < distanceMap.at(nodes[left]) ? left + 1 : left;
+            smallest = distanceMap.at(nodes[smallest]) < distanceMap.at(nodes[index]) ? smallest : index;
+            if(smallest == index){
+                break;
+            }
+            swap(smallest, index);
+            index = smallest;
+            left = index * 2 + 1;
+        }
+    }
+    void addOrUpdateOrIgnore(Node* node, int distance){ 
+        if(inHeap(node)){
+            distanceMap.at(node) = min(distanceMap.at(node), distance);
+            insertHeapify(node, heapIndexMap.at(node));
+        }
+        if(!isEntered(node)){
+            nodes[size] = node;
+            heapIndexMap.at(node) = size;
+            distanceMap.at(node) = distance;
+            insertHeapify(node, size++);
+        }
+    }
+    NodeRecord* pop(){
+        NodeRecord* nodeRecord = new NodeRecord(nodes[0], distanceMap.at(nodes[0]));
+        swap(0, size - 1);
+        heapIndexMap.at(nodes[size - 1]) = -1;
+        distanceMap.erase(nodes[size - 1]);
+        nodes.erase(nodes.begin() + size - 1);
+        heapify(0, --size);
+        return nodeRecord;
+    }
+
+    vector<Node*> nodes;
+    unordered_map<Node*, int> heapIndexMap;
+    unordered_map<Node*, int> distanceMap;
+    int size;
+};
+unordered_map<Node*, int> dijkstral2(Node* head, int size){
+    NodeHeap* nodeheap = new NodeHeap(size);
+    nodeheap->addOrUpdateOrIgnore(head, 0);
+    unordered_map<Node*, int> result;
+    while(!nodeheap->isEmpty()){
+        NodeRecord* record = nodeheap->pop();
+        Node* cur = record->node;
+        int distance = record->distance;
+        for(Edge* edge : cur->edges){
+            nodeheap->addOrUpdateOrIgnore(edge->to, edge->weight + distance);
+        }
+        result.insert(pair<Node*, int>(cur, distance));
+    }
+    return result;
+}
