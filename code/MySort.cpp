@@ -45,7 +45,7 @@ void insertionSor(vector<int> & arr){
         return;
     }
     for(int i = 1; i < arr.size(); i++){ //0~i做到有序
-        for(int j = i-1; j >= 0 && arr[j] > arr[j+1]; j--){
+        for(int j = i-1; j >= 0 && arr[j] > arr[j+1]; j--){ // 0~i-1 已经有序, j 当前位置的前一个位置
             swap(arr, j, j+1);
         }
     }
