@@ -3,6 +3,7 @@
 #include <cstdlib> 
 #include <algorithm> 
 #include <climits>
+#include <queue>
 using namespace std;
 
 void swap(vector<int> & arr, int i, int j){
@@ -65,7 +66,7 @@ void merge(vector<int>& arr, int L, int M, int R){
         //help[i++] = arr[p1++];
         help.push_back(arr[p1++]);
     }
-    while (p2 <= M) {
+    while (p2 <= R) {
         //help[i++] = arr[p2++];
         help.push_back(arr[p2++]);
     }
@@ -90,7 +91,7 @@ void mergeSort(vector<int> & arr){
 }
 
 //快速排序
-//返回值：等于区域的左边界和有边界
+//返回值：等于区域的左边界和右边界
 vector<int> partition(vector<int> & arr, int L, int R){
     int less = L - 1;   // <区右边界
     int more = R;       // >区左边界
@@ -118,7 +119,7 @@ void quickSort(vector<int> & arr, int L, int R){
 //堆排序
 // 某个数现在处在index位置，往上继续移动
 void heapInsert(vector<int> & arr, int index){
-    while (arr[index] > arr[(index - 1) / 2]){
+    while (arr[index] > arr[(index - 1) / 2]){  //当前的数大于父位置的数
         swap(arr, index, (index - 1) / 2);
         index = (index - 1) / 2;
     }
@@ -152,8 +153,8 @@ void heapSort(vector<int> & arr){
     //     heapify(arr, i, arr.size());
     // }
     int heapSize = arr.size();
-    swap(arr, 0, --heapSize);
-    while (heapSize > 0){   //O(N)
+    swap(arr, 0, --heapSize);       //0位置的数与堆上最后一个数做交换
+    while (heapSize > 0){           //O(N)
         heapify(arr, 0, heapSize);  //O(logN)
         swap(arr, 0, --heapSize);   //O(1)
     }
@@ -213,6 +214,24 @@ void radixSort(vector<int> & arr){
         return;
     }
     radixSort(arr, 0, arr.size() - 1, maxbits(arr));
+}
+
+void sortedArrDistanceLessK(vector<int> & arr, int k){
+    priority_queue<int> q;
+    int index = 0;
+    for(; index <= min((int)arr.size(), k); index++){
+        q.push(arr[index]);
+    }
+    int i = 0;
+    for(; index < arr.size(); i++, index++){
+        arr[i] = q.top();
+        q.pop();
+        q.push(arr[index]);     
+    }
+    while (!q.empty()){
+        arr[i++] = q.top();
+        q.pop();
+    }
 }
 
 int main()
