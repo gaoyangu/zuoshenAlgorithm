@@ -160,6 +160,25 @@ void heapSort(vector<int> & arr){
     }
 }
 
+//小根堆的应用
+void sortedArrDistanceLessK(vector<int> & arr, int k){
+    priority_queue<int> q;
+    int index = 0;
+    for(; index <= min((int)arr.size(), k); index++){
+        q.push(arr[index]);
+    }
+    int i = 0;
+    for(; index < arr.size(); i++, index++){
+        arr[i] = q.top();
+        q.pop();
+        q.push(arr[index]);     
+    }
+    while (!q.empty()){
+        arr[i++] = q.top();
+        q.pop();
+    }
+}
+
 //基数排序
 int maxbits(vector<int> & arr){
     int max = INT_MIN;
@@ -214,24 +233,6 @@ void radixSort(vector<int> & arr){
         return;
     }
     radixSort(arr, 0, arr.size() - 1, maxbits(arr));
-}
-
-void sortedArrDistanceLessK(vector<int> & arr, int k){
-    priority_queue<int> q;
-    int index = 0;
-    for(; index <= min((int)arr.size(), k); index++){
-        q.push(arr[index]);
-    }
-    int i = 0;
-    for(; index < arr.size(); i++, index++){
-        arr[i] = q.top();
-        q.pop();
-        q.push(arr[index]);     
-    }
-    while (!q.empty()){
-        arr[i++] = q.top();
-        q.pop();
-    }
 }
 
 int main()
