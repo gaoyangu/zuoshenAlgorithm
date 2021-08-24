@@ -44,10 +44,10 @@ void posOrderUnRecur(Node* head){
             head = s1.top();
             s1.pop();
             s2.push(head);
-            if(head->right != nullptr){
+            if(head->left != nullptr){
                 s1.push(head->left);
             }
-            if(head->left != nullptr){
+            if(head->right != nullptr){
                 s1.push(head->right);
             }
         }

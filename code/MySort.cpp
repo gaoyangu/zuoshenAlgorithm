@@ -4,6 +4,7 @@
 #include <algorithm> 
 #include <climits>
 #include <queue>
+#include <time.h>
 using namespace std;
 
 void swap(vector<int> & arr, int i, int j){
@@ -109,7 +110,8 @@ vector<int> partition(vector<int> & arr, int L, int R){
 }
 void quickSort(vector<int> & arr, int L, int R){
     if(L < R){
-        swap(arr, L + (rand()%(R - L + 1)) + 1, R);
+        srand((unsigned)time(NULL));
+        swap(arr, L + rand() % (R - L + 1), R);
         vector<int> p = partition(arr, L, R);   //根据实际的数据状况决定
         quickSort(arr, L, p[0] - 1);
         quickSort(arr, p[1] + 1, R);
