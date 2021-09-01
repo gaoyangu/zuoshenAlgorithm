@@ -1,53 +1,8 @@
-## 5. 树形dp套路、Morris遍历
+#include <iostream>
+#include <list>
+using namespace std;
 
-[MyTreeDP.cpp](../code/MyTreeDP.cpp)
-
-### 5.1 树形dp套路
-
-树形dp套路使用前提：
-
-如果题目求解目标是S规则，则求解流程可以定成以每一个节点为头节点的子树在s规则下的每一个答案，并且最终答案一定在其中。
-
-第一步：
-
-以某个节点X为头节点的子树中，分析答案有哪些可能性，并且这种分析是以X的左子树、X的右子树和X整棵树的角度来考虑可能性的
-
-第二步：
-
-根据第一步的可能性分析，列出所有需要的信息
-
-第三步：
-
-合并第二步的信息，对左树和右树提出同样的要求，并写出信息结构
-
-第四步：
-
-设计递归函数，递归函数是处理以X为头节点的情况下的答案。
-
-包括设计递归的basecase，默认直接得到左树和右树的所有信息，以及把可能性做整合，并且要返回第三步的信息结构
-
-**1. 二叉树节点间的最大距离问题**
-
-从二叉树的节点a出发，可以向上或者向下走，但沿途的节点只能经过一次，到达节点b时路径上的节点个数叫作a到b的距离，那么二叉树任何两个节点之间都有距离，求整棵树上的最大距离。
-
-分析：
-
-假设 x 节点为头节点，
-
-(1) x 不参与
-
-最大距离可能为：
-- 左树上的最大距离
-- 右树上的最大距离
-
-(2) x 参与
-
-最大距离可能为：
-- 左树上最远节点 -> X -> 右树上最远节点 (左树的高 + 1 + 右树上的高)
-
-因此可以确定返回值结构为：{最大距离，高}，在所有情况中求一个最大值。
-
-```cpp
+// 二叉树节点间的最大距离问题
 class Node {
 public:
     Node(int val) : value(val) { }
@@ -77,38 +32,11 @@ Info process(Node* x) {
     int height = max(leftInfo.height, rightInfo.height) + 1;
     return Info(maxDistacne, height);
 }
-
 int maxDistance(Node* head) {
     return process(head).maxDistance;
 }
-```
 
-**2. 派对的最大快乐值**
 
-员工信息的定义如下：
-```cpp
-class Employee{
-public:
-    int happy; //这名员工可以带来的快乐值 
-    list<Employee> subordinates; //这名员工有哪些直接下级 
-};
-```
-
-公司的每个员工都符合Employee类的描述。
-
-整个公司的人员结构可以看作是一棵标准的、没有环的多叉树，树的头节点是公司唯一的老板。除老板之外的每个员工都有唯一的直接上级。
-
-叶节点是没有任何下属的基层员工（subordinates列表为空），除基层员工外，每个员工都有一个或多个直接下级。
-
-这个公司现在要办party，你可以决定哪些员工来，哪些员工不来。但是要遵循如下规则:
-
-1. 如果某个员工来了，那么这个员工的所有直接下级都不能来
-2. 派对的整体快乐值是所有到场员工快乐值的累加
-3. 你的目标是让派对的整体快乐值尽量大
-
-给定一棵多叉树的头节点boss，请返回派对的最大快乐值。
-
-```cpp
 // 派对的最大快乐值
 class Employee {
 public:
@@ -136,27 +64,9 @@ InfoHappy* process1(Employee* x) {
     }
     return new InfoHappy(com, nocom);
 }
-```
 
-### 5.2 Morris 遍历
 
-一种遍历二叉树的方式，并且时间复杂度O(N)，额外空间复杂度O(1)，通过利用原树中大量空闲指针的方式，达到节省空间的目的
-
-**1. Morris遍历细节**
-
-假设来到当前节点cur，开始时cur来到头节点位置
-
-1. 如果cur没有左孩子，cur向右移动（cur = cur.right）
-
-2. 如果cur有左孩子，找到左子树上最右的节点mostRight：
-    
-    a. 如果mostRight的右指针指向空，让其指向cur，然后cur向左移动(cur =cur.left)
-    
-    b.如果mostRight的右指针指向cur，让其指向null，然后cur向右移动(cur = cur.right)
-
-3. cur为空时遍历停止
-
-```cpp
+// Morris 遍历
 void morris(Node* head) {
     if (!head) {
         return;
@@ -182,15 +92,8 @@ void morris(Node* head) {
         cur = cur->right;
     }
 }
-```
 
-**2. 先序遍历**
-
-如果一个节点只到达一次，直接打印。
-
-如果可以到达两次，第一次打印。
-
-```cpp
+// 先序遍历
 void morrisPre(Node* head) {
     if (!head) {
         return;
@@ -220,15 +123,8 @@ void morrisPre(Node* head) {
         cur = cur->right;
     }
 }
-```
 
-**3. 中序遍历**
-
-如果一个节点只到达一次，直接打印。
-
-如果可以到达两次，第二次打印。
-
-```cpp
+// 中序遍历
 void morrisIn(Node* head) {
     if (!head) {
         return;
@@ -255,15 +151,8 @@ void morrisIn(Node* head) {
         cur = cur->right;
     }
 }
-```
 
-**4. 后序遍历**
-
-如果可以到达两次，第二次时，逆序打印自己左树的右边界，
-
-最后，逆序打印整棵树的右边界。
-
-```cpp
+// 后序遍历
 // 反转链表
 Node* reverseEdge(Node* from){
     Node* pre = nullptr;
@@ -314,13 +203,9 @@ void morrisPos(Node* head) {
     printEdge(head);
     cout << endl;
 }
-```
 
-**5. 搜索二叉树**
 
-判断一棵树是否是搜索二叉树
-
-```cpp
+// 是否是搜索二叉树
 bool isBST(Node* head) {
     if (!head) {
         return true;
@@ -352,4 +237,3 @@ bool isBST(Node* head) {
     }
     return true;
 }
-```

@@ -9,3 +9,10 @@
 - [ ] 简短写法
 
 [JZ14 链表中倒数最后k个结点](https://www.nowcoder.com/practice/886370fe658f41b498d40fb34ae76ff9)
+
+[JZ15 反转链表](https://www.nowcoder.com/practice/75e878df47f24fdc9dc3e400ec6058ca)
+
+- [ ] 经典
+- [ ] 递归
+
+[JZ55 链表中环的入口结点](https://www.nowcoder.com/practice/253d2c59ec3e4bc68da16833f79a38e4)
