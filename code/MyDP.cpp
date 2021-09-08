@@ -1,44 +1,9 @@
-## 7. 从暴力递归到动态规划
+#include <iostream>
+#include <vector>
+using namespace std;
 
-[MyDP.cpp](../code/MyDP.cpp)
-
-1. try(递归)
-
-2. 记忆化搜索(dp)
-
-3. 严格表结构(dp)
-
-4. 严格表精版(dp)
-
-记忆化搜索和严格表结构在某些问题上时间复杂度相同。
-
-### 7.0 严格表结构
-
-1. 分析可变参数的变化范围
-
-2. 标出要计算的终止位置
-
-3. 标出不用计算，直接出答案的位置(base case)
-
-4. 推普遍位置是如何依赖其他位置的
-
-5. 确定依次计算的顺序
-
-### 7.1 机器人运动问题
-
-int N: 表示N个位置，1,2,3...N
-
-int s: 开始位置，1~N
-
-int e: 结束位置，1~N
-
-int k: 机器人必须走k步
-
-求 s->e，必须走 k 步，有多少种方法
-
-**1. 递归**
-
-```cpp
+// 机器人运动问题
+// 递归方法
 // N 固定参数，一共是1~N这么多位置
 // E 固定参数，最终目标是E
 // 还剩 rest 步需要走
@@ -59,13 +24,7 @@ int f(int N, int E, int rest, int cur){
 int walkWays(int N, int E, int S, int K){
     return f(N, E, K, S);
 }
-```
-
-递归方法是一种无后效性的尝试
-
-**2. 记忆化搜索**
-
-```cpp
+// 记忆化搜索
 int f2(int N, int E, int rest, int cur, vector<vector<int>>& dp){
     if(dp[rest][cur] == -1){
         return dp[rest][cur];
@@ -98,11 +57,7 @@ int walkWay2(int N, int E, int S, int K){
     }
     return f2(N, E, K, S, dp);
 }
-```
-
-**3. 严格表结构**
-
-```cpp
+// 严格表结构
 int dpWay(int N, int P, int M, int K){
     vector<vector<int>> dp;
     for(int i = 0; i <= K; i++){
@@ -128,22 +83,9 @@ int dpWay(int N, int P, int M, int K){
     }
     return dp[M][K];
 }
-```
 
-### 7.2 硬币问题
-
-正数数组：[2, 7, 3, 5, 3, ...]
-
-一个数代表一枚硬币
-
-aim = 10，最少需要几枚硬币
-
-**分析：**
-
-从左往右试
-
-**1. 递归**
-```cpp
+// 硬币
+// 递归
 int process(vector<int>& arr, int index, int rest){
     if(rest < 0){
         return -1;
@@ -174,10 +116,7 @@ int process(vector<int>& arr, int index, int rest){
 int minCoins1(vector<int>& arr, int aim){
     return process(arr, 0, aim);
 }
-```
-
-**2. 记忆化搜索**
-```cpp
+// 记忆化搜索
 int process2(vector<int>& arr, int index, int rest, vector<vector<int>> dp){
     if(rest < 0){
         return -1;
@@ -220,10 +159,7 @@ int minCoins2(vector<int>& arr, int aim){
     }
     return process2(arr, 0, aim, dp);
 }
-```
-
-**3. 严格表结构**
-```cpp
+// 严格表结构
 int minCoins3(vector<int>& arr, int aim){
     vector<vector<int>> dp;
     for(int i = 0; i <= arr.size(); i++){
@@ -264,4 +200,13 @@ int minCoins3(vector<int>& arr, int aim){
     }
     return dp[0][aim];
 }
-```
+
+
+
+
+
+
+
+
+
+

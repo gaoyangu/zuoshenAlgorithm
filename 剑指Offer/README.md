@@ -40,3 +40,13 @@
 
     - [图解](https://blog.nowcoder.net/n/09b0b349189242eab11181379ec1c37f)
     - [代码](https://blog.nowcoder.net/n/cc405916b81d475690c0558f39ccfe31)
+
+4. [JZ4 重建二叉树](https://www.nowcoder.com/practice/8a19cbe657394eeaac2f6ea9b0f6fcf6)
+
+    - [图解](https://blog.nowcoder.net/n/c6dd2b4711514b8a9b08cace3cef762a)
+    - [代码](https://blog.nowcoder.net/n/735ed60a9ea44be3ac3a6f13781cba91)
+
+5. [JZ26 二叉搜索树与双向链表](https://www.nowcoder.com/practice/947f6eb80d944a84850b0538bf0ec3a5)
+
+    - [图解](https://blog.nowcoder.net/n/727640d3ac574f7e9f1cac0491b79e29)
+    - [代码](https://blog.nowcoder.net/n/bd03580e04b84b28a8a7bc63e3eed14e)
