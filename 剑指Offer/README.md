@@ -50,3 +50,17 @@
 
     - [图解](https://blog.nowcoder.net/n/727640d3ac574f7e9f1cac0491b79e29)
     - [代码](https://blog.nowcoder.net/n/bd03580e04b84b28a8a7bc63e3eed14e)
+
+6. [JZ17 树的子结构](https://www.nowcoder.com/practice/6e196c44c7004d15b1610b9afca8bd88)
+
+    - [ ] 重做
+
+    - [图解](https://blog.nowcoder.net/n/0c961a326f4c4b82b0026af6df7ffc6f)
+    - [代码](https://blog.nowcoder.net/n/0c961a326f4c4b82b0026af6df7ffc6f)
+
+7. [JZ23 二叉搜索树的后序遍历序列](https://www.nowcoder.com/practice/a861533d45854474ac791d90e447bafd)
+
+    - [ ] 栈
+
+    - [图解](https://blog.nowcoder.net/n/237f3c63e3ea4d68949ced0a69e337ab)
+    - [代码](https://blog.nowcoder.net/n/237f3c63e3ea4d68949ced0a69e337ab)
