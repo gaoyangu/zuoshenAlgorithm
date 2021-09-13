@@ -15,109 +15,126 @@ public:
     Node* right;
 };
 
+// Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ };
+
 // 先序
-void preOrderUnRecur(Node* head){
-    if(head != nullptr){
-        stack<Node*> s;
-        s.push(head);
-        while (!s.empty()){
-            head = s.top();
-            s.pop();
-            cout << head->value << " ";
-            if(head->right != nullptr){
-                s.push(head->right);
-            }
-            if(head->left != nullptr){
-                s.push(head->left);
-            }
+vector<int> preorderTraversal(TreeNode* root) {
+    vector<int> res;
+    if(!root){
+        return res;
+    }
+    stack<TreeNode*> s;
+    s.push(root);
+    while(!s.empty()){
+        TreeNode* cur = s.top();
+        s.pop();
+        res.push_back(cur->val);
+        if(cur->right){
+            s.push(cur->right);
+        }
+        if(cur->left){
+            s.push(cur->left);
         }
     }
+    return res;
 }
 
 // 后序
-void posOrderUnRecur(Node* head){
-    if(head != nullptr){
-        stack<Node*> s1;
-        stack<Node*> s2;
-        s1.push(head); 
-        while (!s1.empty()){
-            head = s1.top();
-            s1.pop();
-            s2.push(head);
-            if(head->left != nullptr){
-                s1.push(head->left);
-            }
-            if(head->right != nullptr){
-                s1.push(head->right);
-            }
+vector<int> postorderTraversal(TreeNode* root) {
+    vector<int> res;
+    if(!root){
+        return res;
+    }
+    stack<TreeNode*> s;
+    s.push(root);
+    stack<TreeNode*> sRes;
+    while(!s.empty()){
+        TreeNode* cur = s.top();
+        s.pop();
+        sRes.push(cur);
+        if(cur->left){
+            s.push(cur->left);
         }
-        while(!s2.empty()){
-            cout << s2.top()->value << " ";
-            s2.pop();
+        if(cur->right){
+            s.push(cur->right);
         }
     }
+    while(!sRes.empty()){
+        res.push_back(sRes.top()->val);
+        sRes.pop();
+    }
+    return res;
 }
 
 // 中序
-void inOrderUnRecur(Node* head){
-    if(head != nullptr){
-        stack<Node*> s;
-        while (!s.empty() || head != nullptr){
-            if(head != nullptr){
-                s.push(head->left);
-                head = head->left;
-            }
-            else{
-                head = s.top();
-                s.pop();
-                cout << head->value << " ";
-                head = head->right;
-            }
+vector<int> inorderTraversal(TreeNode* root) {
+    vector<int> res;
+    stack<TreeNode*> s;
+    while(!s.empty() || root){
+        while(root){
+            s.push(root);
+            root = root->left;      
         }
+        root = s.top();
+        s.pop();
+        res.push_back(root->val);
+        root = root->right;
     }
+    return res;
 }
 
 // 宽度优先遍历
-void w(Node* head){
-    if(head == nullptr){
-        return;
+vector<int> levelOrder(TreeNode* root) {
+    vector<int> res;
+    if(!root){
+        return res;
     }
-    queue<Node*> q;
-    q.push(head);
-    while (!q.empty()){
-        Node* cur = q.front();
+    queue<TreeNode*> q;
+    q.push(root);
+    while(!q.empty()){
+        TreeNode* cur = q.front();
+        res.push_back(cur->val);
         q.pop();
-        cout << cur->value;
-        if(cur->left != nullptr){
+        if(cur->left){
             q.push(cur->left);
         }
-        if(cur->right != nullptr){
+        if(cur->right){
             q.push(cur->right);
         }
     }
+    return res;
 }
 
 // 二叉树的宽度
-int getMaxWidth(Node* head){
+// 使用哈希表
+int getMaxWidth(TreeNode* head){
     if(head == nullptr){
         return 0;
     }
-    int maxWidth = 0;
+    int maxWidth = 0;   // 哪一层的节点数目是最多的
     int curWidth = 0;
-    int curLevel = 0;
-    unordered_map<Node*, int> levelMap;
-    levelMap.insert(pair<Node*, int>(head, 1));
-    queue<Node*> q;
+    int curLevel = 0;   // 当前在哪一层
+    unordered_map<TreeNode*, int> levelMap;     //节点在第几层
+    levelMap.insert(pair<TreeNode*, int>(head, 1));
+    queue<TreeNode*> q;
     q.push(head);
-    Node* node = nullptr;
-    Node* left = nullptr;
-    Node* right = nullptr;
+    TreeNode* node = nullptr;
+    TreeNode* left = nullptr;
+    TreeNode* right = nullptr;
     while (!q.empty()){
         node = q.front();
         left = node->left;
         right = node->right;
         q.pop();
-        int curLevelNodes = levelMap.at(node);
+        int curLevelNodes = levelMap.at(node);  // 节点所在的层数
         if(curLevelNodes == curLevel){
             curWidth++;
         }
@@ -127,12 +144,43 @@ int getMaxWidth(Node* head){
             curLevelNodes = 1;
         }
         if(left != nullptr){
-            levelMap.insert(pair<Node*, int>(left, levelMap.at(node) + 1));
+            levelMap.insert(pair<TreeNode*, int>(left, levelMap.at(node) + 1));
             q.push(left);
         }
         if(right != nullptr){
-            levelMap.insert(pair<Node*, int>(right, levelMap.at(node) + 1));
+            levelMap.insert(pair<TreeNode*, int>(right, levelMap.at(node) + 1));
             q.push(right);
+        }
+    }
+    return maxWidth;
+}
+// 不使用哈希表
+int getMaxWidth2(TreeNode* root) {
+    if(!root){
+        return 0;
+    }
+    queue<TreeNode*> q;
+    q.push(root);
+    int maxWidth = -1;
+    int curLevelNodes = 0;      // 当前层的节点数
+    TreeNode* curEnd = root;    // 当前层的最后一个节点
+    TreeNode* nextEnd = nullptr;// 下一层的最后一个节点
+    while(!q.empty()){
+        TreeNode* cur = q.front();
+        q.pop();
+        curLevelNodes++;
+        if(cur->left){
+            q.push(cur->left);
+            nextEnd = cur->left;
+        }
+        if(cur->right){
+            q.push(cur->right);
+            nextEnd = cur->right;
+        }
+        if(cur == curEnd){
+            maxWidth = max(maxWidth, curLevelNodes);
+            curEnd = nextEnd;
+            nextEnd = nullptr;
         }
     }
     return maxWidth;
