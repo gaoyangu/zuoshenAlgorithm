@@ -113,3 +113,31 @@ public:
         return check(sequence, l, j) && check(sequence, j + 1, r - 1);
     }
 };
+
+// JZ24 二叉树中和为某一值的路径
+class SolutionJZ24 {
+public:
+    vector<int> path;
+    vector<vector<int> > res;
+    
+    void DFS(TreeNode* root,int expectNumber){
+        path.push_back(root->val);
+        if(expectNumber == root->val && !root->left && !root->right){
+            res.push_back(path);
+        }
+        if(root->left){
+            DFS(root->left, expectNumber - root->val);
+        }
+        if(root->right){
+            DFS(root->right, expectNumber - root->val);
+        }
+        path.pop_back();    // 回溯过程
+    }
+    vector<vector<int> > FindPath(TreeNode* root,int expectNumber) {
+        if(!root){
+            return res;
+        }
+        DFS(root, expectNumber);
+        return res;
+    }
+};

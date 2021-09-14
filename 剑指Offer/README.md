@@ -64,3 +64,8 @@
 
     - [图解](https://blog.nowcoder.net/n/237f3c63e3ea4d68949ced0a69e337ab)
     - [代码](https://blog.nowcoder.net/n/237f3c63e3ea4d68949ced0a69e337ab)
+
+8. [JZ24 二叉树中和为某一值的路径](https://www.nowcoder.com/practice/b736e784e3e34731af99065031301bca)
+
+    - [图解](https://blog.nowcoder.net/n/a5c39b31ecff4c5eaac93cb73108ef51)
+    - [代码](https://blog.nowcoder.net/n/2460f9824e1341dfa23b06ad1932d5bd)
