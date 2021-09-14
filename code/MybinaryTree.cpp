@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
+#include <limits.h>
 
 using namespace std;
 
@@ -188,64 +189,41 @@ int getMaxWidth2(TreeNode* root) {
 
 // 搜索二叉树
 // 递归
-int preValue = INTMAX_MIN;
-bool checkBST(Node* head){
-    if(head == nullptr){
+long long preValue = (long long)INT_MIN - 1;
+bool isValidBST(TreeNode* root) {
+    if(!root){
         return true;
     }
-    bool isLeftBST = checkBST(head->left);
+    bool isLeftBST = isValidBST(root->left);
     if(!isLeftBST){
         return false;
     }
-    if(head->value <= preValue){
+    if(root->val <= preValue){
         return false;
     }
-    else{
-        preValue = head->value;
-    }
-    return checkBST(head->right);
-}
-// 
-void process2(Node* head, vector<Node*> inOrderList){
-    if(head == nullptr){
-        return;
-    }
-    process2(head->left, inOrderList);
-    inOrderList.push_back(head);
-    process2(head->right, inOrderList);
-}
-bool checkBST2(Node* head){
-    vector<Node*> inOrderList;
-    process2(head, inOrderList);
-    for(int i = 0; i < inOrderList.size() - 1; i++){
-        if (inOrderList[i] >= inOrderList[i+1]){
-            return false;
-        }
-    }
-    return true;
+    preValue = root->val;
+    return isValidBST(root->right);
 }
 // 非递归
-bool checkBST3(Node* head){
-    if(head != nullptr){
-        int preValue = INTMAX_MIN;
-        stack<Node*> s;
-        while (!s.empty() || head != nullptr){
-            if(head != nullptr){
-                s.push(head);
-                head = head->left;
-            }
-            else{
-                head = s.top();
-                s.pop();
-                if(head->value <= preValue){
-                    return false;
-                }
-                else{
-                    preValue = head->value;
-                }
-                head = head->right;
-            }
+bool isValidBST2(TreeNode* root) {
+    if(!root){
+        return true;
+    }
+    long long preValue = (long long)INT_MIN - 1;
+    stack<TreeNode*> s;
+    TreeNode* cur = root;
+    while(!s.empty() || cur){
+        while(cur){
+            s.push(cur);
+            cur = cur->left;
         }
+        cur = s.top();
+        s.pop();
+        if(cur->val <= preValue){
+            return false;
+        }
+        preValue = cur->val;
+        cur = cur->right;
     }
     return true;
 }
@@ -286,24 +264,27 @@ bool checkBST3(Node* head){
 
 
 // 完全二叉树
-bool isCBT(Node* head){
-    if(head == nullptr){
+bool isCompleteTree(TreeNode* root) {
+    if(!root){
         return true;
     }
-    queue<Node*> q;
-    // 是否遇到过左右两个孩子不全的节点
-    bool leaf = false;
-    Node* l = nullptr;
-    Node* r = nullptr;
-    q.push(head);
-    while (!q.empty()){
-        head = q.front();
+    bool isLeaf = false;
+    queue<TreeNode*> q;
+    q.push(root);
+    while(!q.empty()){
+        TreeNode* cur = q.front();
         q.pop();
-        l = head->left;
-        r = head->right;
-        if((leaf && (l != nullptr || r != nullptr)) 
-            || (l == nullptr && r != nullptr)){
+        if((cur->right && !cur->left) || (isLeaf && (cur->left || cur->right))){
             return false;
+        }
+        if(cur->left){
+            q.push(cur->left);
+        }
+        if(cur->right){
+            q.push(cur->right);
+        }
+        if(!cur->left || !cur->right){
+            isLeaf = true;
         }
     }
     return true;
