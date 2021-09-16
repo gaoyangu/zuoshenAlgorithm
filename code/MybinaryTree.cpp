@@ -4,17 +4,10 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
+#include <list>
 #include <limits.h>
 
 using namespace std;
-
-class Node{
-public:
-    Node(int val) : value(val) { }
-    int value;
-    Node* left;
-    Node* right;
-};
 
 // Definition for a binary tree node.
 struct TreeNode {
@@ -25,6 +18,7 @@ struct TreeNode {
     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  };
+
 
 // 先序
 vector<int> preorderTraversal(TreeNode* root) {
@@ -114,6 +108,7 @@ vector<int> levelOrder(TreeNode* root) {
     return res;
 }
 
+
 // 二叉树的宽度
 // 使用哈希表
 int getMaxWidth(TreeNode* head){
@@ -186,6 +181,7 @@ int getMaxWidth2(TreeNode* root) {
     }
     return maxWidth;
 }
+
 
 // 搜索二叉树
 // 递归
@@ -262,7 +258,6 @@ bool isValidBST2(TreeNode* root) {
 // }
 
 
-
 // 完全二叉树
 bool isCompleteTree(TreeNode* root) {
     if(!root){
@@ -290,15 +285,15 @@ bool isCompleteTree(TreeNode* root) {
     return true;
 }
 
+
 // 满二叉树
-class Info{
-public:
+struct Info{
     Info(int h, int n) : height(h),nodes(n){ }
     int height;
     int nodes;
 };
-Info f(Node* head){
-    if(head == nullptr){
+Info f(TreeNode* head){
+    if(!head){
         return Info(0, 0);
     }
     Info leftData = f(head->left);
@@ -307,82 +302,98 @@ Info f(Node* head){
     int nodes = leftData.nodes + rightData.nodes + 1;
     return Info(height, nodes);
 }
-bool isFBT(Node* head){
+bool isFBT(TreeNode* head){
     if(head == nullptr){
         return true;
     }  
     Info data = f(head);
-    return data.nodes == (1 << data.height - 1);
+    return data.nodes == ((data.height << 1) - 1);
 }
 
+
 // 平衡二叉树
-class ReturnType{
-public:
-    ReturnType(bool isB, int hei) : isBalanced(isB), height(hei) { }
-    bool isBalanced;
-    int height;
+struct ReturnType{
+    bool m_isBal;
+    int m_height;
+    ReturnType(bool isBal, int height) : m_isBal(isBal), m_height(height) { }
 };
-ReturnType process(Node* head){
-    if(head == nullptr){
+ReturnType process(TreeNode* root){
+    if(!root){
         return ReturnType(true, 0);
     }
-    ReturnType leftData = process(head->left);
-    ReturnType rightData = process(head->right);
-    int height = max(leftData.height, rightData.height) + 1;
-    bool isBalanced = leftData.isBalanced && rightData.isBalanced 
-                        && abs(leftData.height - rightData.height) < 2;
-    return ReturnType(isBalanced, height);
+    ReturnType leftInfo = process(root->left);
+    ReturnType rightInfo = process(root->right);
+    bool isBal = leftInfo.m_isBal && rightInfo.m_isBal && abs(leftInfo.m_height - rightInfo.m_height) < 2;
+    int height = max(leftInfo.m_height, rightInfo.m_height) + 1;
+    return ReturnType(isBal, height);
 }
-bool isBalanced(Node* head){
-    return process(head).isBalanced;
+bool isBalanced(TreeNode* root) {
+    if(!root){
+        return true;
+    }
+    return process(root).m_isBal;
 }
+
 
 // 最低公共祖先节点
 // 方法一
-void process(Node* head, unordered_map<Node*, Node*> fatherMap){
-    if(head == nullptr){
+void process(TreeNode* root, unordered_map<TreeNode*, TreeNode*>& fatherMap){
+    if(!root){
         return;
     }
-    fatherMap.insert(pair<Node*, Node*>(head->left, head));
-    fatherMap.insert(pair<Node*, Node*>(head->right, head));
-    process(head->left, fatherMap);
-    process(head->right);
+    fatherMap.insert(pair<TreeNode*, TreeNode*>(root->left, root));
+    fatherMap.insert(pair<TreeNode*, TreeNode*>(root->right, root));
+    process(root->left, fatherMap);
+    process(root->right, fatherMap);
 }
-Node* lca(Node* head, Node* o1, Node* o2){
-    unordered_map<Node*, Node*> fatherMap;
-    fatherMap.insert(pair<Node*, Node*>(head, head));
-    process(head, fatherMap);
-    unordered_set<Node*> s;
-    Node* cur = o1;
-    while (cur != fatherMap.at(cur)){
-        s.insert(cur);
-        cur = fatherMap.at(cur);
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    if(!root){
+        return NULL;
     }
-    s.insert(head);
+    unordered_map<TreeNode*, TreeNode*> fatherMap;
+    fatherMap.insert(pair<TreeNode*, TreeNode*>(root, root));
+    process(root, fatherMap);
 
-    cur = o2;
-    while (cur != fatherMap.at(cur)){
+    unordered_set<TreeNode*> s;
+
+    TreeNode* cur = p;
+    while(cur != fatherMap[cur]){
+        s.insert(cur);
+        cur = fatherMap[cur];
+    }
+    s.insert(root);
+    
+    cur = q;
+    while(cur != fatherMap[cur]){
         if(s.find(cur) != s.end()){
             return cur;
         }
-        cur = fatherMap.at(cur);
+        cur = fatherMap[cur];
     }
-    return head;
-}
+    return root;
+}  
 // 方法二
-Node* lowestAmcestor(Node* head, Node* o1, Node* o2){
-    // base case
-    if(head == nullptr || head == o1 || head == o2){
-        return head;
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    if(!root || root == p || root == q){
+        return root;
     }
-    Node* left = lowestAmcestor(head->left, o1, o2);
-    Node* right = lowestAmcestor(head->right, o1, o2);
-    if(left != nullptr && right != nullptr){
-        return head;
+    TreeNode* left = lowestCommonAncestor(root->left, p, q);
+    TreeNode* right = lowestCommonAncestor(root->right, p, q);
+    if(left && right){
+        return root;
     }
-    return left != nullptr ? left : right;
+    return left != NULL? left : right;
 }
 
+
+class Node{
+public:
+    Node(int val) : value(val) { }
+    int value;
+    Node* left;
+    Node* right;
+    Node* parent;
+};
 // 后继节点
 Node* getLeftMost(Node* node){
     if(node == nullptr){
@@ -404,44 +415,55 @@ Node* getSuccessorNode(Node* node){
         Node* parent = node->parent;
         while(parent != nullptr && parent->left != node){
             node = parent;
-            parent = node.parent;
+            parent = node->parent;
         }
         return parent;
     }
 }
 
+
 // 二叉树的序列化和反序列化
-string serialByPre(Node* head){
-    if(head == nullptr){
+// Encodes a tree to a single string.
+string serialize(TreeNode* root) {
+    if(!root){
         return "#_";
     }
-    string res = head->value + "_";
-    res += serialByPre(head->left);
-    res += serialByPre(head->right);
-    return res;
+    string data = to_string(root->val) + "_";
+    data += serialize(root->left);
+    data += serialize(root->right);
+    return data;
 }
-Node* reconPreOrder(queue<string> q){
-    string value = q.front();
-    q.pop();
-    if(value == "#"){
-        return nullptr;
+// Decodes your encoded data to tree.
+TreeNode* deserialize(string data) {
+    list<string> dataArray;
+    string str;
+    for(auto& ch : data){
+        if(ch == '_'){
+            dataArray.push_back(str);
+            str.clear();
+        }
+        else{
+            str.push_back(ch);
+        }
     }
-    Node* head = new Node(stoi(value));
-    head->left = reconPreOrder(q);
-    head->right = reconPreOrder(q);
+    if(!str.empty()){
+        dataArray.push_back(str);
+        str.clear();
+    }
+    return deserializeSub(dataArray);
+}
+TreeNode* deserializeSub(list<string>& dataArray){
+    if(dataArray.front() == "#"){
+        dataArray.erase(dataArray.begin());
+        return NULL;
+    }
+    TreeNode* head = new TreeNode(stoi(dataArray.front()));
+    dataArray.erase(dataArray.begin());
+    head->left = deserializeSub(dataArray);
+    head->right = deserializeSub(dataArray);
     return head;
 }
-Node* reconByPreString(string preStr){
-    queue<string> q;
-    int pos = preStr.find("_");
-    while (pos != preStr.npos) {
-        string temp = preStr.substr(0, pos);
-        q.push(temp);
-        preStr = preStr.substr(pos + 1, preStr.size());
-        pos = preStr.find("_");
-    }
-    return reconPreOrder(q);
-}
+
 
 // 折纸问题
 // 递归过程，来到了某一个节点
