@@ -69,3 +69,18 @@
 
     - [图解](https://blog.nowcoder.net/n/a5c39b31ecff4c5eaac93cb73108ef51)
     - [代码](https://blog.nowcoder.net/n/2460f9824e1341dfa23b06ad1932d5bd)
+
+9. [JZ61 序列化二叉树](https://www.nowcoder.com/practice/cf7e25aa97c04cc1a68c8f040e71fb84)
+
+10. [JZ22 从上往下打印二叉树](https://www.nowcoder.com/practice/7fe2212963db4790b57431d9ed259701)
+
+11. [JZ58 对称的二叉树](https://www.nowcoder.com/practice/ff05d44dfdb04e1d83bdbdab320efbcb)
+
+
+### 3. Stack & Queue
+
+1. [剑指 Offer 09. 用两个栈实现队列](https://leetcode-cn.com/problems/yong-liang-ge-zhan-shi-xian-dui-lie-lcof/)
+
+2. [剑指 Offer 30. 包含min函数的栈](https://leetcode-cn.com/problems/bao-han-minhan-shu-de-zhan-lcof/)
+
+3. [剑指 Offer 31. 栈的压入、弹出序列](https://leetcode-cn.com/problems/zhan-de-ya-ru-dan-chu-xu-lie-lcof/)

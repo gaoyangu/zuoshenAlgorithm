@@ -6,6 +6,23 @@
 using namespace std;
 
 // n 层汉诺塔问题
+// leetcode
+void hanota(vector<int>& A, vector<int>& B, vector<int>& C) {
+    int n = A.size();
+    process(n, A, C, B);
+}
+void process(int n, vector<int>& from, vector<int>& to, vector<int>& other){
+    if(n == 1){
+        to.push_back(from.back());
+        from.pop_back();
+        return;
+    }
+    process(n - 1, from, other, to);
+    to.push_back(from.back());
+    from.pop_back();
+    process(n - 1, other, to, from);
+}
+//
 void func(int i, string start, string end, string other) {
     if (i == 1) {   // base case
         cout << "Move 1 from " << start << " to " << end << endl;
@@ -21,6 +38,7 @@ void hanoi(int n) {
         func(n, "左", "右", "中");
     }
 }
+
 
 // 打印一个字符串的全部子序列
 void process(string str, int i) {
