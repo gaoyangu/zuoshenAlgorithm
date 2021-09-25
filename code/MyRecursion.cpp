@@ -53,26 +53,40 @@ void process(string str, int i) {
     str[i] = tmp;
 }
 
+
 // 打印一个字符串的全排列
-void swap(string str, int i, int j) {
-    char tmp = str[i];
-    str[i] = str[j];
-    str[j] = tmp;
+void swap(string& s, int i, int j) {
+    char tmp = s[i];
+    s[i] = s[j];
+    s[j] = tmp;
 }
-void process1(string str, int i, list<string> res) {
-    if (i == str.size()) {
-        res.push_back(str);
+vector<string> permutation(string s) {
+    vector<string> res;
+    process(s, 0, res);
+    return res;
+}
+// str[i...]范围上，所有的字符，都可以在i位置上，后续都去尝试
+// str[0...i-1]范围上，是之前做的选择
+// res: 所有的结果
+void process(string s, int i, vector<string>& res) {
+    if (i == s.size()) {
+        res.push_back(s);
+        return;
     }
     vector<bool> visit;
-    for (int j = i; j < str.size(); j++) {
-        if (!visit[str[j] - 'a']) {
-            visit[str[j] - 'a'] = true;
-            swap(str, i, j);
-            process1(str, i + 1, res);
-            swap(str, i, j);
-        }
+    for(int k = 0; k < 26; k++){
+        visit.push_back(false);
+    }
+    for (int j = i; j < s.size(); j++) {
+        if(!visit[s[j] - 'a']){ // 分支限界，指标上没有优化，常数项有优化
+            visit[s[j] - 'a'] = true;
+            swap(s, i, j);
+            process(s, i + 1, res);
+            swap(s, i, j);
+        }  
     }
 }
+
 
 // 纸牌游戏
 // 先手
@@ -118,6 +132,7 @@ int f(stack<int> s) {
     }
 }
 
+
 // 字符串转化
 // i 之前的位置如何转化已经做过决定
 // i... 有多少种转化的结果
@@ -147,6 +162,7 @@ int process2(string str, int i) {
     return process2(str, i + 1);
 }
 
+
 // 装物品
 // i... 的货物自由选择，形成的最大价值返回
 int process3(vector<int>& weights, vector<int>& values, int i, int alreadyweight, int bag) {
@@ -159,6 +175,7 @@ int process3(vector<int>& weights, vector<int>& values, int i, int alreadyweight
     return max(process3(weights, values, i + 1, alreadyweight, bag),
         values[i] + process3(weights, values, i + 1, alreadyweight + weights[i], bag));
 }
+
 
 // N皇后问题
 bool isVaild(vector<int>& record, int i, int j) {
