@@ -7,27 +7,27 @@
 #include <time.h>
 using namespace std;
 
-void swap(vector<int> & arr, int i, int j){
+void swap(vector<int>& arr, int i, int j){
     int tmp = arr[i];
     arr[i] = arr[j];
     arr[j] = tmp; 
 }
 
-//选择排序
-void selectionSort(vector<int> & arr){
+// 选择排序
+void selectSort(vector<int>& arr){
     if( arr.size() < 2){
         return;
     }
-    for (int i = 0; i < arr.size() - 1; i++){
+    for (int i = 0; i < arr.size() - 1; i++){   // i ~ N-1
         int minIndex = i;
         for (int j = i + 1; j < arr.size(); j++){
             minIndex = arr[j] < arr[minIndex] ? j : minIndex;
         }
-        swap(arr, i ,minIndex);
+        swap(arr, i, minIndex);
     }
 }
 
-//冒泡排序
+// 冒泡排序
 void bubbleSort(vector<int> & arr){
     if( arr.size() < 2){
         return;
@@ -42,7 +42,7 @@ void bubbleSort(vector<int> & arr){
 }
 
 //插入排序
-void insertionSor(vector<int> & arr){
+void insertionSort(vector<int> & arr){
     if (arr.size() < 2){
         return;
     }
