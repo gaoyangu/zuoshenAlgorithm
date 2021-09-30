@@ -27,6 +27,7 @@ void selectSort(vector<int>& arr){
     }
 }
 
+
 // 冒泡排序
 void bubbleSort(vector<int> & arr){
     if( arr.size() < 2){
@@ -41,6 +42,7 @@ void bubbleSort(vector<int> & arr){
     }
 }
 
+
 //插入排序
 void insertionSort(vector<int> & arr){
     if (arr.size() < 2){
@@ -53,70 +55,69 @@ void insertionSort(vector<int> & arr){
     }
 }
 
+
 //归并排序
-void merge(vector<int>& arr, int L, int M, int R){
-    vector<int> help;   //！额外空间复杂度
-    //int i = 0;
-    int p1 = L;
-    int p2 = M + 1;
-    while (p1 <= M && p2 <= R) {
-        //help[i++] = arr[p1] <= arr[p2] ? arr[p1++] : arr[p2++];
-        help.push_back(arr[p1] <= arr[p2] ? arr[p1++] : arr[p2++]);
-    }
-    while (p1 <= M) {
-        //help[i++] = arr[p1++];
-        help.push_back(arr[p1++]);
-    }
-    while (p2 <= R) {
-        //help[i++] = arr[p2++];
-        help.push_back(arr[p2++]);
-    }
-    for (int i = 0; i < help.size(); i++) {
-        arr[L + i] = help[i];
-    }
+vector<int> mergeSort(vector<int>& nums) {
+    process(nums, 0, nums.size() - 1);
+    return nums;
 }
-void process(vector<int>& arr, int L, int R){
-    if (L == R){
+void process(vector<int>& nums, int L, int R){
+    if(L == R){
         return;
     }
     int mid = L + ((R - L) >> 1);
-    process(arr, L, mid);
-    process(arr, mid + 1, R);
-    merge(arr, L, mid, R);
+    process(nums, L, mid);
+    process(nums, mid + 1, R);
+    merge(nums, L, mid, R);
 }
-void mergeSort(vector<int> & arr){
-    if(arr.size() < 2){
-        return;
+void merge(vector<int>& nums, int L, int M, int R){
+    vector<int> help;   //！额外空间复杂度
+    int p1 = L;
+    int p2 = M + 1;
+    while(p1 <= M && p2 <= R){
+        help.push_back(nums[p1] <= nums[p2] ? nums[p1++] : nums[p2++]);
     }
-    process(arr, 0, arr.size() - 1);
+    while(p1 <= M){
+        help.push_back(nums[p1++]);
+    }
+    while(p2 <= R){
+        help.push_back(nums[p2++]);
+    }
+    for(int i = 0; i < help.size(); i++){
+        nums[L + i] = help[i];
+    }
 }
 
+
 //快速排序
+void quickSort(vector<int>& nums, int L, int R){
+    if(L < R){
+        srand((unsigned)time(NULL));
+        swap(nums, L + rand()%(R - L + 1), R);  //在数组中随机选择一个数，与最后一个数交换作为划分值num
+        vector<int> p = partition(nums, L, R);  //根据实际的数据状况决定
+        quickSort(nums, L, p[0] - 1);
+        quickSort(nums, p[1] + 1, R);
+    }
+}
 //返回值：等于区域的左边界和右边界
-vector<int> partition(vector<int> & arr, int L, int R){
+vector<int> partition(vector<int>& nums, int L, int R){
     int less = L - 1;   // <区右边界
     int more = R;       // >区左边界
-    while (L < more){
-        if(arr[L] < arr[R]){        //当前值 < 划分值
-            swap(arr, ++less, L++);
-        }else if(arr[L] > arr[R]){  //当前值 > 划分值
-            swap(arr, --more, L);
-        }else{
+    while(L < more){
+        if(nums[L] < nums[R]){      //当前值 < 划分值
+            swap(nums, ++less, L++);
+        }
+        else if(nums[L] > nums[R]){ //当前值 > 划分值
+            swap(nums, --more, L);
+        }
+        else{
             L++;
         }
     }
-    swap(arr, more, R);
+    swap(nums, more, R);
     return {less + 1, more};
 }
-void quickSort(vector<int> & arr, int L, int R){
-    if(L < R){
-        srand((unsigned)time(NULL));
-        swap(arr, L + rand() % (R - L + 1), R);
-        vector<int> p = partition(arr, L, R);   //根据实际的数据状况决定
-        quickSort(arr, L, p[0] - 1);
-        quickSort(arr, p[1] + 1, R);
-    }
-}
+
 
 //堆排序
 // 某个数现在处在index位置，往上继续移动
@@ -163,17 +164,18 @@ void heapSort(vector<int> & arr){
 }
 
 //小根堆的应用
-void sortedArrDistanceLessK(vector<int> & arr, int k){
-    priority_queue<int> q;
+void sortedArrDistanceLessK(vector<int>& arr, int k){
+    // 默认大根堆，greater -> 小根堆
+    priority_queue<int, vector<int>, greater<int>> q;
     int index = 0;
     for(; index <= min((int)arr.size(), k); index++){
         q.push(arr[index]);
     }
     int i = 0;
     for(; index < arr.size(); i++, index++){
+        q.push(arr[index]);
         arr[i] = q.top();
         q.pop();
-        q.push(arr[index]);     
     }
     while (!q.empty()){
         arr[i++] = q.top();
