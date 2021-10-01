@@ -184,27 +184,14 @@ void sortedArrDistanceLessK(vector<int>& arr, int k){
 }
 
 //基数排序
-int maxbits(vector<int> & arr){
-    int max = INT_MIN;
-    for(int i = 0; i < arr.size(); i++){
-        max = max > arr[i] ? max : arr[i];
+void radixSort(vector<int>& arr){
+    if(arr.size() < 2){
+        return;
     }
-    int res = 0;
-    while (max != 0){
-        res++;
-        max /= 10;
-    }
-    return res;
-}
-int getDigit(int a, int d){
-    int res = 0;
-    for(int i = 1; i < d; i++){
-        a /= 10;
-    }
-    return a%10;
+    radixSort(arr, 0, arr.size() - 1, maxbits(arr));
 }
 //digit：最大值有几个十进制位
-void radixSort(vector<int> & arr, int L, int R, int digit){
+void radixSort(vector<int>& arr, int L, int R, int digit){
     const int radix = 10;
     int i = 0, j = 0;
     vector<int> bucket; //R-L+1
@@ -214,7 +201,7 @@ void radixSort(vector<int> & arr, int L, int R, int digit){
         // count[1] 当前位(d位)是(0和1)的数字有多少个
         // count[2] 当前位(d位)是(0、1和2)的数字有多少个
         // count[i] 当前位(d位)是(0~i)的数字有多少个
-        vector<int> count;  //词频表
+        vector<int> count;  //词频表，长度为10
         for(i = L; i <= R; i++){    //个位数字 等于2 的有多少个
             j = getDigit(arr[i], d);
             count[j]++;
@@ -232,12 +219,26 @@ void radixSort(vector<int> & arr, int L, int R, int digit){
         }
     }
 }
-void radixSort(vector<int> & arr){
-    if(arr.size() < 2){
-        return;
+int maxbits(vector<int>& arr){
+    int maxNum = INT_MIN;
+    for(int i = 0; i < arr.size(); i++){
+        maxNum = maxNum > arr[i] ? maxNum : arr[i];
     }
-    radixSort(arr, 0, arr.size() - 1, maxbits(arr));
+    int res = 0;
+    while (maxNum != 0){
+        res++;
+        maxNum /= 10;
+    }
+    return res;
 }
+int getDigit(int a, int d){
+    int res = 0;
+    for(int i = 1; i < d; i++){
+        a /= 10;
+    }
+    return a % 10;
+}
+
 
 int main()
 {
