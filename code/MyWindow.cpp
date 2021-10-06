@@ -62,3 +62,30 @@ vector<int> getMaxWindow(vector<int> arr, int w){
     }
     return res;
 }
+// leetcode: 239. 滑动窗口最大值
+vector<int> maxInWindows(const vector<int>& num, unsigned int size) {
+    vector<int> res;
+    if(num.size() < size || size == 0){
+        return res;
+    }
+    deque<int> q;
+    int n = num.size();
+    for(int i = 0; i < size; i++){
+        while(!q.empty() && num[i] >= num[q.back()]){
+            q.pop_back();
+        }
+        q.push_back(i);
+    }
+    res.push_back(num[q.front()]);
+    for(int i = size; i < n; i++){
+        while(!q.empty() && num[i] >= num[q.back()]){
+            q.pop_back();
+        }
+        q.push_back(i);
+        while(q.front() <= i - size){
+            q.pop_front();
+        }
+        res.push_back(num[q.front()]);
+    }
+    return res;
+}

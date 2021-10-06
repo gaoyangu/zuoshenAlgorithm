@@ -88,3 +88,5 @@
 4. [JZ44 翻转单词序列](https://www.nowcoder.com/practice/3194a4f4cf814f63919d0790578d51f3)
 
     - [ ]
+
+5. [JZ64 滑动窗口的最大值](https://www.nowcoder.com/practice/1624bc35a45c42c0bc17d17fa0cba788)
