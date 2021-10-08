@@ -90,3 +90,7 @@
     - [ ]
 
 5. [JZ64 滑动窗口的最大值](https://www.nowcoder.com/practice/1624bc35a45c42c0bc17d17fa0cba788)
+
+### 4. 排序
+
+1. [JZ35 数组中的逆序对](https://www.nowcoder.com/practice/96bd6684e04a44eb80e6a68efc0ec6c5)
