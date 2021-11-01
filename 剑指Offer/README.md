@@ -94,3 +94,7 @@
 ### 4. 排序
 
 1. [JZ35 数组中的逆序对](https://www.nowcoder.com/practice/96bd6684e04a44eb80e6a68efc0ec6c5)
+
+### 5. 搜索算法
+
+1. [JZ4 二维数组中的查找](https://www.nowcoder.com/practice/abc3fe2ce8e146608e868a70efebf62e)
