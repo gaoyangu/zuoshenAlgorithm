@@ -35,9 +35,10 @@ public:
     unordered_set<Edge*> edges;         // 边集
 };
 
+
 // 结构转化
 // [from, to, weight]
-Graph creatGraph(vector<vector<int>> & matrix){
+Graph creatGraph(vector<vector<int>>& matrix){
     Graph graph;
     for(int i = 0; i < matrix.size(); i++){
         int from = matrix[i][0];
@@ -61,8 +62,9 @@ Graph creatGraph(vector<vector<int>> & matrix){
     return graph;
 }
 
+
 // 图的宽度优先遍历
-void bfs(Node* node){
+void bfsGraph(Node* node){
     if(node == nullptr){
         return;
     }
@@ -83,9 +85,10 @@ void bfs(Node* node){
     }
 }
 
+
 // 图的深度优先遍历
 // 入栈时处理
-void dfs(Node* node){
+void dfsGraph(Node* node){
     if(node == nullptr){
         return;
     }
@@ -108,6 +111,7 @@ void dfs(Node* node){
         }
     }
 }
+
 
 // 拓扑排序
 list<Node*> sortedTopology(Graph graph){
@@ -139,10 +143,12 @@ list<Node*> sortedTopology(Graph graph){
     return result;
 }
 
+
 // 最小生成树
 class MySets{
 public:
     MySets(list<Node*> nodes){
+        // !!! 错误代码，待修正
         for(Node* cur : nodes){
             list<Node*> s;
             s.push_back(cur);
@@ -168,28 +174,27 @@ public:
     unordered_map<Node*, list<Node*>> setMap;
 };
 // kruskal算法
-class EdgeComparator{
+class EdgeComparator {
 public:
-    bool operator()(Edge* e1, Edge* e2){
+    bool operator()(Edge* e1, Edge* e2) {
         return e1->weight > e2->weight;
     }
 };
-set<Edge*> kruskalMST(Graph graph){
-    list<Node*> ltmp;
-    for(int i = 0; i < graph.nodes.size(); i++){
-        ltmp.push_back(graph.nodes.at(i));
+set<Edge*> kruskalMST(Graph graph) {
+    list<Node*> lTmp;
+    for (int i = 0; i < graph.nodes.size(); i++) {
+        lTmp.push_back(graph.nodes.at(i));
     }
-    MySets mysets(ltmp);
-    // vector<Edge*> v;
-    priority_queue<Edge*, vector<Edge*>, EdgeComparator()> p;
-    for(Edge* edge : graph.edges){
-        p.push(edge);
+    MySets mysets(lTmp);
+    priority_queue<Edge*, vector<Edge*>, EdgeComparator> q;
+    for (Edge* edge : graph.edges) {
+        q.push(edge);
     }
     set<Edge*> result;
-    while(!p.empty()){
-        Edge* e = p.top();
-        p.pop();
-        if(!mysets.isSameSet(e->from, e->to)){
+    while (!q.empty()) {
+        Edge* e = q.top();
+        q.pop();
+        if (!mysets.isSameSet(e->from, e->to)) {
             result.insert(e);
             mysets.unionSet(e->from, e->to);
         }
@@ -197,30 +202,30 @@ set<Edge*> kruskalMST(Graph graph){
     return result;
 }
 // prim 算法
-set<Edge*> primMST(Graph graph){
-    // vector<Edge*> v;
-    priority_queue<Edge*, vector<Edge*>, EdgeComparator()> p;
-    vector<Node*> vN;
+set<Edge*> primMST(Graph graph) {
+    priority_queue<Edge*, vector<Edge*>, EdgeComparator> q;
+    vector<Node*> vNode;
     unordered_set<Node*> s;
     set<Edge*> result;      // 依次挑选的边放在result中
-    for(int i = 0; i < graph.nodes.size(); i++){
-        vN.push_back(graph.nodes.at(i));
+    for (int i = 0; i < graph.nodes.size(); i++) {
+        vNode.push_back(graph.nodes.at(i));
     }
-    for(Node* node : vN){   // 随便挑一个点
-        if(s.find(node) == s.end()){
+    for (Node* node : vNode) {   // 处理森林问题：不是连通图
+        // 随便挑一个点
+        if (s.find(node) == s.end()) {
             s.insert(node);
-            for(Edge* edge : node->edges){  // 由一个点，解锁所有相连的边
-                p.push(edge);
+            for (Edge* edge : node->edges) {  // 由一个点，解锁所有相连的边
+                q.push(edge);
             }
-            while(!p.empty()){
-                Edge* edge = p.top();  // 弹出解锁的边中最小的边
-                p.pop();
+            while (!q.empty()) {
+                Edge* edge = q.top();  // 弹出解锁的边中最小的边
+                q.pop();
                 Node* toNode = edge->to;    // 可能的一个新的点
-                if(s.find(toNode) == s.end()){  // 不包含的时候就是新的点
+                if (s.find(toNode) == s.end()) {  // 不包含的时候就是新的点
                     s.insert(toNode);
                     result.insert(edge);
-                    for(Edge* newEdge : toNode->edges){
-                        p.push(newEdge);
+                    for (Edge* newEdge : toNode->edges) {
+                        q.push(newEdge);
                     }
                 }
             }
@@ -229,23 +234,22 @@ set<Edge*> primMST(Graph graph){
     return result;
 }
 
+
 // Dijkstra算法
-Node* getMinDistanceAndUnselectedNode(
-        unordered_map<Node*, int> distaceMap, 
-        unordered_set<Node*> touchedNodes){
-    Node* minNode;
+Node* getMinDistanceAndUnselectedNode(unordered_map<Node*, int> distaceMap, unordered_set<Node*> touchedNodes) {
+    Node* minNode = nullptr;
     int minDistance = INTMAX_MAX;
-    for(pair<Node*, int> entry : distaceMap){
+    for (pair<Node*, int> entry : distaceMap) {
         Node* node = entry.first;
         int distance = entry.second;
-        if(touchedNodes.find(node) == touchedNodes.end() && distance < minDistance){
+        if (touchedNodes.find(node) == touchedNodes.end() && distance < minDistance) {
             minNode = node;
             minDistance = distance;
         }
     }
     return minNode;
 }
-unordered_map<Node*, int> dijkstral(Node* head){
+unordered_map<Node*, int> dijkstral(Node* head) {
     // key: 从head出发到达key
     // value: 从head出发到达key的最小距离
     unordered_map<Node*, int> distanceMap;
@@ -253,11 +257,11 @@ unordered_map<Node*, int> dijkstral(Node* head){
     // 已经求过距离的节点放在selectedNodes中，以后再也不碰
     unordered_set<Node*> selectedNodes;
     Node* minNode = getMinDistanceAndUnselectedNode(distanceMap, selectedNodes);
-    while (minNode != nullptr){
+    while (minNode != nullptr) {
         int distance = distanceMap.at(minNode);
-        for(Edge* edge : minNode->edges){
+        for (Edge* edge : minNode->edges) {
             Node* toNode = edge->to;
-            if(distanceMap.find(toNode) == distanceMap.end()){
+            if (distanceMap.find(toNode) == distanceMap.end()) {
                 distanceMap.insert(pair<Node*, int>(toNode, distance + edge->weight));
             }
             distanceMap.insert(pair<Node*, int>(toNode, min(distanceMap.at(toNode), distance + edge->weight)));
@@ -340,7 +344,7 @@ public:
     unordered_map<Node*, int> distanceMap;
     int size;
 };
-unordered_map<Node*, int> dijkstral2(Node* head, int size){
+unordered_map<Node*, int> dijkstralwithHeap(Node* head, int size){
     NodeHeap* nodeheap = new NodeHeap(size);
     nodeheap->addOrUpdateOrIgnore(head, 0);
     unordered_map<Node*, int> result;
