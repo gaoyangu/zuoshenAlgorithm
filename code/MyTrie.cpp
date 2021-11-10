@@ -5,9 +5,9 @@
 #include <queue>
 using namespace std;
 
-class TireNode{
+class TrieNode{
 public:
-    TireNode(){
+    TrieNode(){
         pass = 0;
         end = 0;
         for(int i = 0; i < 26; i++){
@@ -19,30 +19,33 @@ public:
         }
     }
 
-    int pass;
-    int end;
-    vector<TireNode*> nexts;
+    int pass;   //节点通过了多少次
+    int end;    //是多少个字符串的结尾节点
+    vector<TrieNode*> nexts;
+    // 字符类型很多时
+    //unordered_map<char, TrieNode*> nexts; 
+    //map<char, TrieNode*> nexts;
 };
 
-class Tire{
+class Trie{
 public:
-    Tire(){
-        root = new TireNode();
+    TrieNode* root;
+
+    Trie(){
+        root = new TrieNode();
     }
 
-    TireNode* root;
-
     void insertWord(string word){
-        if(word.empty()){
+        if(word.size() < 1){
             return;
         }
-        TireNode* node = root;
+        TrieNode* node = root;
         node->pass++;
         int index = 0;
         for(auto ch : word){
             index = ch - 'a';
             if(node->nexts[index] == nullptr){
-                node->nexts[index] = new TireNode();
+                node->nexts[index] = new TrieNode();
             }
             node = node->nexts[index];
             node->pass++;
@@ -52,10 +55,10 @@ public:
 
     // word 这个单词之前加入过了几次
     int searchWord(string word){
-        if(word.empty()){
-            return 0;
+        if(word.size() < 1){
+            return;
         }
-        TireNode* node = root;
+        TrieNode* node = root;
         int index = 0;
         for(auto ch : word){
             index = ch - 'a';
@@ -69,10 +72,10 @@ public:
 
     // 所有加入的字符串中，有几个是以 pre 这个字符串作为前缀的
     int prefixNumber(string pre){
-        if(pre.empty()){
+        if(pre.size() < 1){
             return 0;
         }
-        TireNode* node = root;
+        TrieNode* node = root;
         int index = 0;
         for(auto ch : pre){
             index = ch - 'a';
@@ -86,13 +89,14 @@ public:
 
     void deleteWord(string word){
         if(searchWord(word) != 0){
-            TireNode* node = root;
+            TrieNode* node = root;
             node->pass--;
             int index = 0;
             for(auto ch : word){
                 index = ch - 'a';
                 if(--node->nexts[index]->pass == 0){
-                    node->nexts[index] = nullptr;   // todo
+                    node->nexts[index] = nullptr;   
+                    // todo: 内存管理
                     return;
                 }
                 node = node->nexts[index];
@@ -113,17 +117,18 @@ public:
 // 谓词
 class ProgramComparator{
 public:
-    bool operator()(Program & p1, Program & p2){
+    bool operator()(Program& p1, Program& p2){
         return p1.end < p2.end;
     }
 };
-int bestArrange(vector<Program> & programs, int timePoint){
+int bestArrange(vector<Program*>& programs, int timePoint){
     sort(programs.begin(), programs.end(), ProgramComparator());
     int result = 0;
+    // 从左往右依次遍历所有的会议
     for(int i = 0; i < programs.size(); i++){
-        if(timePoint <= programs[i].start){
+        if(timePoint <= programs[i]->start){
             result++;
-            timePoint = programs[i].end;
+            timePoint = programs[i]->end;
         }
     }
     return result;
@@ -132,11 +137,11 @@ int bestArrange(vector<Program> & programs, int timePoint){
 // 贪心算法 - 字符串最小字典序
 class MyComparator{
 public:
-    bool operator()(string & p1, string & p2){
-        return p1 < p2;
+    bool operator()(string& p1, string& p2){
+        return p1 + p2 <= p2 + p1;
     }
 };
-string lowestString(vector<string> & strs){
+string lowestString(vector<string>& strs){
     if(strs.size() < 1){
         return "";
     }
@@ -173,6 +178,7 @@ int lessMoney(vector<int>& arr) {
 class Node {
 public:
     Node(int p, int c) : profit(p), cost(c){ }
+    
     int profit;
     int cost;
 };
