@@ -26,7 +26,7 @@ int walkWays(int N, int E, int S, int K){
 }
 // 记忆化搜索
 int f2(int N, int E, int rest, int cur, vector<vector<int>>& dp){
-    if(dp[rest][cur] == -1){
+    if(dp[rest][cur] != -1){
         return dp[rest][cur];
     }
     // 缓存没命中
@@ -70,6 +70,7 @@ int dpWay(int N, int P, int M, int K){
     dp[0][P] = 1;
     for(int rest = 1; rest <= K; rest++){
         for(int cur = 1; cur <= N; cur++){
+            // 根据递归函数改写
             if(cur == 1){
                 dp[rest][cur] = dp[rest - 1][2];
             }
@@ -131,8 +132,8 @@ int process2(vector<int>& arr, int index, int rest, vector<vector<int>> dp){
         dp[index][rest] = -1;
     }
     else{
-        int p1 = process(arr, index + 1, rest);
-        int p2Next = process(arr, index + 1, rest - arr[index]);
+        int p1 = process(arr, index + 1, res, dp);
+        int p2Next = process(arr, index + 1, rest - arr[index], dp);
         if(p1 == -1 && p2Next == -1){
             dp[index][rest] = -1;
         }
@@ -177,6 +178,7 @@ int minCoins3(vector<int>& arr, int aim){
     }
     for(int index = arr.size() - 1; index >= 0; index--){
         for(int rest = 1; rest <= aim; rest++){
+            // 根据递归函数改写
             int p1 = dp[index + 1][rest];
             int p2Next = -1;
             if(rest - arr[index] >= 0){
