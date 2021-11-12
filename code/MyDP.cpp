@@ -113,6 +113,7 @@ int process(vector<int>& arr, int index, int rest){
         }
         return min(p1, p2Next + 1);
     }
+    return -1;
 }
 int minCoins1(vector<int>& arr, int aim){
     return process(arr, 0, aim);
