@@ -245,8 +245,11 @@ int dp(vector<int>& arr){
 
 // 三维动态规划（象棋）
 // 递归
+// 潜台词：从 (0,0) 位置出发
+// 要去玩(x, y)位置，必须跳step步
+// 返回方法数
 int process(int x, int y, int step){
-    if(x < 0 || x > 8 || y < 0 || y > 8){
+    if(x < 0 || x > 8 || y < 0 || y > 9){
         return 0;
     }
     if(step == 0){
@@ -266,13 +269,13 @@ int getWays(int x, int y, int k){
 }
 // 动态规划
 int getValue(vector<vector<vector<int>>>& dp, int row, int col, int step){
-    if(row < 0 || row > 8 || col < 0 || col > 9){
+    if(row < 0 || row > 8 || col < 0 || col > 9){   // 越界
         return 0;
     }
     return dp[row][col][step];
 }
 int dpWays(int x, int y, int step){
-    if(x < 0 || x > 8 || y < 0 || y > 8){
+    if(x < 0 || x > 8 || y < 0 || y > 9){
         return 0;
     }
     vector<vector<vector<int>>> dp;
@@ -307,6 +310,7 @@ int dpWays(int x, int y, int step){
 
 
 // 三维动态规划（生存概率）
+// N*M 的区域，Bob从(row,col)位置出发，走rest步之后，获得的生存方法数
 long processBob(int N, int M, int row, int col, int rest){
     if(row < 0 || row == N || col < 0 || col == M){
         return 0;
