@@ -294,14 +294,14 @@ int dpWays(int x, int y, int step){
     for(int h = 1; h <= step; h++){
         for(int r = 0; r <= 8; r++){
             for(int c = 0; c <= 9; c++){
-                dp[r][c][h] += getValue(x - 1, y + 2, step - 1);
-                dp[r][c][h] += getValue(x - 2, y + 1, step - 1);
-                dp[r][c][h] += getValue(x - 2, y - 1, step - 1);
-                dp[r][c][h] += getValue(x - 1, y - 2, step - 1);
-                dp[r][c][h] += getValue(x + 1, y - 2, step - 1);
-                dp[r][c][h] += getValue(x + 2, y - 1, step - 1);
-                dp[r][c][h] += getValue(x + 2, y + 1, step - 1);
-                dp[r][c][h] += getValue(x + 1, y + 2, step - 1);
+                dp[r][c][h] += getValue(dp, r - 1, c + 2, h - 1);
+                dp[r][c][h] += getValue(dp, r - 2, c + 1, h - 1);
+                dp[r][c][h] += getValue(dp, r - 2, c - 1, h - 1);
+                dp[r][c][h] += getValue(dp, r - 1, c - 2, h - 1);
+                dp[r][c][h] += getValue(dp, r + 1, c - 2, h - 1);
+                dp[r][c][h] += getValue(dp, r + 2, c - 1, h - 1);
+                dp[r][c][h] += getValue(dp, r + 2, c + 1, h - 1);
+                dp[r][c][h] += getValue(dp, r + 1, c + 2, h - 1);
             }
         }
     }
