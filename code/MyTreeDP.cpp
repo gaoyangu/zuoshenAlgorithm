@@ -19,7 +19,7 @@ public:
 };
 
 Info process(Node* x) {
-    if (!x) {
+    if (x == nullptr) {
         return Info(0, 0);
     }
     Info leftInfo = process(x->left);
@@ -51,14 +51,14 @@ public:
     int nocomeMaxhappy;
 };
 
-InfoHappy* process1(Employee* x) {
+InfoHappy* process(Employee* x) {
     if (x->nexts.empty()) {
         return new InfoHappy(x->happy, 0);
     }
     int com = x->happy; // x 来的情况下，整棵树最大收益
     int nocom = 0;      // x 不来的情况下，整棵树最大收益
     for (Employee* next : x->nexts) {
-        InfoHappy* nextinfo = process1(next);
+        InfoHappy* nextinfo = process(next);
         com += nextinfo->nocomeMaxhappy;
         nocom += max(nextinfo->comeMaxhappy, nextinfo->nocomeMaxhappy);
     }
@@ -68,19 +68,19 @@ InfoHappy* process1(Employee* x) {
 
 // Morris 遍历
 void morris(Node* head) {
-    if (!head) {
+    if (head == nullptr) {
         return;
     }
     Node* cur = head;
     Node* mostRight = nullptr;
     while (cur) {
         mostRight = cur->left;
-        if (mostRight) {    // 如果有左子树
+        if (mostRight != nullptr) {    // 如果有左子树
             while (mostRight->right && mostRight->right != cur) {
                 mostRight = mostRight->right;
             }
             // mostRight 变成了cur左子树上的最右节点
-            if (!mostRight) {
+            if (mostRight->right == nullptr) {
                 mostRight->right = cur;
                 cur = cur->left;
                 continue;
@@ -102,12 +102,12 @@ void morrisPre(Node* head) {
     Node* mostRight = nullptr;
     while (cur) {
         mostRight = cur->left;
-        if (mostRight) {    // 如果有左子树
+        if (mostRight != nullptr) {    // 如果有左子树
             while (mostRight->right && mostRight->right != cur) {
                 mostRight = mostRight->right;
             }
             // mostRight 变成了cur左子树上的最右节点
-            if (!mostRight) {
+            if (mostRight->right == nullptr) {
                 cout << cur->value << endl;
                 mostRight->right = cur;
                 cur = cur->left;
@@ -133,12 +133,12 @@ void morrisIn(Node* head) {
     Node* mostRight = nullptr;
     while (cur) {
         mostRight = cur->left;
-        if (mostRight) {    // 如果有左子树
+        if (mostRight != nullptr) {    // 如果有左子树
             while (mostRight->right && mostRight->right != cur) {
                 mostRight = mostRight->right;
             }
             // mostRight 变成了cur左子树上的最右节点
-            if (!mostRight) {
+            if (mostRight->right == nullptr) {
                 mostRight->right = cur;
                 cur = cur->left;
                 continue;
@@ -183,12 +183,12 @@ void morrisPos(Node* head) {
     Node* mostRight = nullptr;
     while (cur) {
         mostRight = cur->left;
-        if (mostRight) {    // 如果有左子树
+        if (mostRight != nullptr) {    // 如果有左子树
             while (mostRight->right && mostRight->right != cur) {
                 mostRight = mostRight->right;
             }
             // mostRight 变成了cur左子树上的最右节点
-            if (!mostRight) {
+            if (mostRight->right == nullptr) {
                 mostRight->right = cur;
                 cur = cur->left;
                 continue;
@@ -215,12 +215,12 @@ bool isBST(Node* head) {
     int preValue = INTMAX_MIN;
     while (cur) {
         mostRight = cur->left;
-        if (mostRight) {    // 如果有左子树
+        if (mostRight != nullptr) {    // 如果有左子树
             while (mostRight->right && mostRight->right != cur) {
                 mostRight = mostRight->right;
             }
             // mostRight 变成了cur左子树上的最右节点
-            if (!mostRight) {
+            if (mostRight->right == nullptr) {
                 mostRight->right = cur;
                 cur = cur->left;
                 continue;

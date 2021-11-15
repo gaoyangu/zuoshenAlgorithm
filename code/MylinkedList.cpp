@@ -370,7 +370,7 @@ ListNode* getLoopNode(ListNode* head) {
         return nullptr;
     }
     ListNode* n1 = head->next;          // n1 -> slow
-    ListNode* n2 = head->next->next;    // n2 -> slow
+    ListNode* n2 = head->next->next;    // n2 -> fast
     while (n1 != n2){
         if (n2->next == nullptr || n2->next->next == nullptr) {
             return nullptr;
