@@ -4,157 +4,27 @@
 
 using namespace std;
 
-// 双向链表
+ struct ListNode {
+    int val;
+    ListNode *next;
 
-class ListNode {
-public:
-    ListNode(int v) : value(v), prev(nullptr), next(nullptr), rand(nullptr) {}
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+ };
 
-    int value;
-    ListNode* prev;
-    ListNode* next;
-    ListNode* rand;
-};
-
-class MylinkedList {
-public:
-    /** Initialize your data structure here. */
-    MylinkedList() : size(0), head(nullptr), tail(nullptr) {}
-
-    /** Get the value of the index-th node in the linked list. If the index is invalid, return -1. */
-    int get(int index) {
-        if (index < 0 || index > size) {
-            return -1;
-        }
-        ListNode* p = head;
-        for (int i = 0; i < index; i++) {
-            p = p->next;
-        }
-        return p->value;
+// 反转单向链表
+ListNode* reverseList(ListNode* head) {
+    ListNode* pre = nullptr;
+    ListNode* cur = head;
+    while(cur){
+        ListNode* next = cur->next;
+        cur->next = pre;
+        pre = cur;
+        cur = next;
     }
-
-    /** Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. */
-    void addAtHead(int val) {
-        if (head != nullptr) {
-            ListNode* node = new ListNode(val);
-            node->next = head;
-            head->prev = node;
-            head = node;
-        }
-        else {
-            head = new ListNode(val);
-            tail = head;
-        }
-        size++;
-    }
-
-    /** Append a node of value val to the last element of the linked list. */
-    void addAtTail(int val) {
-        if (tail != nullptr) {
-            ListNode* node = new ListNode(val);
-            node->prev = tail;
-            tail->next = node;
-            tail = node;
-        }
-        else {
-            tail = new ListNode(val);
-            head = tail;
-        }
-        size++;
-    }
-
-    /** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. */
-    void addAtIndex(int index, int val) {
-        if (index <= 0) {
-            addAtHead(val);
-            return;
-        }
-        if (index == size) {
-            addAtTail(val);
-            return;
-        }
-        if (index > size) {
-            return;
-        }
-
-        ListNode* p = nullptr, * cur = head;
-        for (int i = 0; i < index; i++) {
-            p = cur;
-            cur = cur->next;
-            i++;
-        }
-
-        ListNode* node = new ListNode(val);
-        p->next = node;
-        node->prev = p;
-        node->next = cur;
-        cur->prev = node;
-        size++;
-    }
-
-    /** Delete the index-th node in the linked list, if the index is valid. */
-    void deleteAtIndex(int index) {
-        if (!head) {
-            return;
-        }
-        if (index == 0) {
-            ListNode* del = head;
-            head = head->next;
-            if (head) {
-                head->prev = nullptr;
-            }
-            else {
-                tail = nullptr;
-            }
-            delete del;
-            size--;
-            return;
-        }
-        if (index == size - 1) {
-            ListNode* del = tail;
-            tail = tail->prev;
-            if (tail) {
-                tail->next = nullptr;
-            }
-            delete del;
-            size--;
-            return;
-        }
-        int i = 0;
-        ListNode* p = nullptr, * cur = head;
-        for (int i = 0; i < index; i++) {
-            p = cur;
-            cur = cur->next;
-        }
-        ListNode* del = cur;
-        p->next = cur->next;
-        if (cur->next) {
-            cur->next->prev = p;
-        }
-        delete del;
-        size--;
-        return;
-        /*while (cur) {
-            if (i == index) {
-                ListNode* del = cur;
-                p->next = cur->next;
-                if (cur->next) {
-                    cur->next->prev = p;
-                }
-                delete del;
-                size--;
-                return;
-            }
-            p = cur;
-            cur = cur->next;
-            i++;
-        }*/
-    }
-
-    int size;
-    ListNode* head;
-    ListNode* tail;
-};
+    return pre;
+}
 
 void printPublicList(ListNode* head1, ListNode* head2) {
     ListNode* p1 = head1;
