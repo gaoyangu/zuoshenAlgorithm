@@ -32,6 +32,7 @@ void infect(vector<vector<int>>& m, int i, int j, int N, int M){
     infect(m, i, j - 1, N, M);
 }
 
+
 // 并查集
 template <typename V>
 class Element {
@@ -44,54 +45,56 @@ template <typename V>
 class UnionFindSet {
 public:
     UnionFindSet(list<V> l) {
-        for (V value : l) {
-            Element<V> element = new Element<V>(value);
-            elementMap.insert(value, element);
-            fatherMap.insert(element, element);
-            sizeMap.insert(element, 1);
+        for (auto value : l) {
+            Element* element = new Element(value);
+            elementMap.insert(pair<V, Element*>(value, element));
+            fatherMap.insert(pair<Element*, Element*>(element, element));
+            sizeMap.insert(pair<Element*, V>(element, 1));
         }
     }
 
     // 给定一个ele，往上一直找，把代表元素返回
-    Element<V> findHead(Element<V> element) {
-        stack<Element<V>> path;
-        while (element != fatherMap.at(element)){
+    Element<V>* findHead(Element<V>* element) {
+        stack<Element*> path;
+        while (element != fatherMap.at(element)) {
             path.push(element);
             element = fatherMap.at(element);
         }
+        // 扁平化处理
         while (!path.empty()) {
-            fatherMap.insert(path.top(), element);
+            fatherMap.insert(pair<Element*, Element*>(path.top(), element));
             path.pop();
         }
         return element;
     }
 
-    bool isSameSet(V a, V b) {
+    bool isSameSet(int a, int b) {
         if (elementMap.find(a) != elementMap.end() && elementMap.find(b) != elementMap.end()) {
             return findHead(elementMap.at(a)) == findHead(elementMap.at(b));
         }
         return false;
     }
 
-    void unionSet(V a, V b) {
+    void unionSet(int a, int b) {
         if (elementMap.find(a) != elementMap.end() && elementMap.find(b) != elementMap.end()) {
-            Element<V> aF = findHead(elementMap.at(a));
-            Element<V> bF = findHead(elementMap.at(b));
+            Element* aF = findHead(elementMap.at(a));
+            Element* bF = findHead(elementMap.at(b));
             if (aF != bF) {
-                Element<V> big = sizeMap.at(aF) >= sizeMap.at(bF) ? aF : bF;
-                Element<V> small = big == aF ? bF : aF;
-                fatherMap.insert(small, big);
-                sizeMap.insert(big, sizeMap.at(aF) + sizeMap.at(bF));
+                Element* big = sizeMap.at(aF) >= sizeMap.at(bF) ? aF : bF;
+                Element* small = big == aF ? bF : aF;
+                fatherMap.insert(pair<Element<V>*, Element<V>*>(small, big));
+                sizeMap.insert(pair<Element<V>*, V>(big, sizeMap.at(aF) + sizeMap.at(bF)));
                 sizeMap.erase(small);
             }
         }
     }
 
-    unordered_map<V, Element<V>> elementMap;
+    // 样本对应的元素
+    unordered_map<V, Element<V>*> elementMap;
     // key: 某个元素，value: 该元素的父
-    unordered_map<Element<V>, Element<V>> fatherMap;
+    unordered_map<Element<V>*, Element<V>*> fatherMap;
     // key: 某个集合的代表元素，value: 该集合的大小
-    unordered_map<Element<V>, int> sizeMap;
+    unordered_map<Element<V>*, V> sizeMap;
 };
 
 
