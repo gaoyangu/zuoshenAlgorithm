@@ -32,7 +32,7 @@ int getIndexOf(string s, string m) {
     int i1 = 0;
     int i2 = 0;
     vector<int> next = getNextArray(m); // O(M)    
-    while (i1 < s.size() && i1 < m.size()) { // O(N)
+    while (i1 < s.size() && i2 < m.size()) { // O(N)
         if (s[i1] == m[i2]) {
             i1++;
             i2++;
