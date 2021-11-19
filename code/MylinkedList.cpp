@@ -62,22 +62,22 @@ bool isPalindrome1(ListNode* head) {
 }
 
 bool isPalindrome2(ListNode* head) {
-    if(head == nullptr || head->next == nullptr) {
+    if(head == nullptr || head->next == nullptr){
         return true;
     }
-    ListNode* right = head->next;
-    ListNode* cur = head;
-    while (cur->next != nullptr && cur->next->next != nullptr){
-        right = right->next;
-        cur = cur->next->next;
+    ListNode* fast = head->next;
+    ListNode* slow = head;
+    while(fast->next && fast->next->next){
+        slow = slow->next;
+        fast = fast->next->next;
     }
     stack<ListNode*> s;
-    while (right != nullptr){
-        s.push(right);
-        right = right->next;
+    while(slow != nullptr){
+        s.push(slow);
+        slow = slow->next;
     }
-    while (!s.empty()){
-        if (head->value != s.top()->value) {
+    while(!s.empty()){
+        if(head->val != s.top()->val){
             return false;
         }
         s.pop();
@@ -87,47 +87,39 @@ bool isPalindrome2(ListNode* head) {
 }
 
 bool isPalindrome3(ListNode* head) {
-    if (head == nullptr || head->next == nullptr) {
+    if(head == nullptr || head->next == nullptr){
         return true;
     }
 
-    ListNode* n1 = head;
-    ListNode* n2 = head;
-    while (n2->next != nullptr && n2->next->next != nullptr) {
-        n1 = n1->next;          // n1 -> mid
-        n2 = n2->next->next;    // n2 -> end
-    }
-    n2 = n1->next;      // n2 -> right part first node
-    n1->next = nullptr; // mid.next -> null
-    ListNode* n3 = nullptr;
-    while (n2 != nullptr){  // right part convert
-        n3 = n2->next;
-        n2->next = n1;
-        n1 = n2;
-        n2 = n3;
-    }
-    n3 = n1;
-    n2 = head;
+    // 找到前半部分链表的尾节点并反转后半部分链表
+    ListNode* firstHalfEnd = endOfFirstHalf(head);
+    ListNode* secondHalfStart = reverseList(firstHalfEnd->next);
 
-    bool res = true;
-    while (n1 != nullptr && n2 != nullptr){ // check palindrome
-        if (n1->value != n2->value) {
-            res = false;
+    // 判断是否回文
+    ListNode* p1 = head;
+    ListNode* p2 = secondHalfStart;
+    bool result = true;
+    while(p2 != nullptr){
+        if(p1->val != p2->val){
+            result = false;
             break;
         }
-        n1 = n1->next;
-        n2 = n2->next;
+        p1 = p1->next;
+        p2 = p2->next;
     }
-
-    n1 = n3->next;
-    n3->next = nullptr;
-    while (n1 != nullptr){  // recover list
-        n2 = n1->next;
-        n1->next = n3;
-        n3 = n1;
-        n1 = n2;
+    
+    // 还原链表并返回结果
+    firstHalfEnd->next = reverseList(secondHalfStart);
+    return result;
+}
+ListNode* endOfFirstHalf(ListNode* head){
+    ListNode* fast = head;
+    ListNode* slow = head;
+    while(fast->next && fast->next->next){
+        slow = slow->next;      // slow -> mid
+        fast = fast->next->next;// fast -> end
     }
-    return res;
+    return slow;
 }
 
 ListNode* listPartition2(ListNode* head, int pivot){
