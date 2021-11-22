@@ -13,6 +13,7 @@ using namespace std;
     ListNode(int x, ListNode *next) : val(x), next(next) {}
  };
 
+
 // 反转单向链表
 ListNode* reverseList(ListNode* head) {
     ListNode* pre = nullptr;
@@ -26,6 +27,8 @@ ListNode* reverseList(ListNode* head) {
     return pre;
 }
 
+
+// 打印两个有序链表的公共部分
 void printPublicList(ListNode* head1, ListNode* head2) {
     ListNode* p1 = head1;
     ListNode* p2 = head2;
@@ -44,6 +47,8 @@ void printPublicList(ListNode* head1, ListNode* head2) {
     }
 }
 
+
+// 判断一个链表是否为回文结构
 bool isPalindrome1(ListNode* head) {
     stack<ListNode*> s;
     ListNode* cur = head;
@@ -122,6 +127,8 @@ ListNode* endOfFirstHalf(ListNode* head){
     return slow;
 }
 
+
+// 将单向链表按某值划分成左边小、中间相等、右边大的形式
 ListNode* listPartition2(ListNode* head, int pivot){
     ListNode* sH = nullptr;
     ListNode* sT = nullptr;
@@ -178,54 +185,76 @@ ListNode* listPartition2(ListNode* head, int pivot){
     return sH != nullptr ? sH : (eH != nullptr ? eH : bH);
 }
 
-ListNode* copyListWithRand1(ListNode* head) {
-    unordered_map<ListNode*, ListNode*> map;    //key: old node, value: new node
-    ListNode* cur = head;
-    while (cur != nullptr){
-        map.insert(pair<ListNode*, ListNode*>(cur, new ListNode(cur->value)));
+
+// 复制含有随机指针节点的链表
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+    
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
+};
+Node* copyRandomList(Node* head) {
+    if(head == NULL){
+        return NULL;
+    }
+    Node* cur = head;
+    unordered_map<Node*, Node*> map;
+    while(cur != NULL){
+        //map.insert(pair<Node*, Node*>(cur, new Node(cur->val)));
+        map[cur] = new Node(cur->val);
         cur = cur->next;
     }
     cur = head;
-    while (cur != nullptr){
-        map.at(cur)->next = map.at(cur->next);
-        map.at(cur)->rand = map.at(cur->rand);
+    while(cur != NULL){
+        map[cur]->next = map[cur->next];
+        map[cur]->random = map[cur->random];
         cur = cur->next;
     }
-    return map.at(head);
+    return map[head];
 }
 
-ListNode* copyListWithRand2(ListNode* head) {
-    if (head == nullptr) {
-        return nullptr;
+Node* copyRandomList(Node* head) {
+    if(head == NULL){
+        return NULL;
     }
-    ListNode* cur = head;
-    ListNode* next = nullptr;
-    while (cur != nullptr) {
+    Node* cur = head;
+    Node* next = NULL;
+    // 1. 复制各节点，并构建拼接链表
+    while(cur != NULL){
         next = cur->next;
-        cur->next = new ListNode(cur->value);
+        cur->next = new Node(cur->val);
         cur->next->next = next;
         cur = next;
     }
     cur = head;
-    ListNode* curCopy = nullptr;
-    while (cur != nullptr){
+    Node* copyNode = NULL;
+    // 2. 构建各新节点的 random 指向
+    while(cur != NULL){
         next = cur->next->next;
-        curCopy = cur->next;
-        curCopy->rand = cur->rand != nullptr ? cur->rand->next : nullptr;
+        copyNode = cur->next;
+        copyNode->random = cur->random != NULL ? cur->random->next : NULL;
         cur = next;
     }
-    ListNode* res = head->next;
+    Node* res = head->next;
     cur = head;
-    while (cur != nullptr){
+    // 3. 拆分两个链表
+    while(cur != NULL){
         next = cur->next->next;
-        curCopy = cur->next;
+        copyNode = cur->next;
+        copyNode->next = (next != NULL ? next->next : NULL);
         cur->next = next;
-        curCopy->next = (next != nullptr ? next->next : nullptr);
         cur = next;
     }
     return res;
 }
- 
+
+
 // 找到链表第一个入环节点，如果无环，返回null
 ListNode* getLoopNode(ListNode* head) {
     if (head == nullptr || head->next == nullptr || head->next->next == nullptr) {
