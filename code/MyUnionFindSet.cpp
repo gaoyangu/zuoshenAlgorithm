@@ -22,7 +22,7 @@ int countIslands(vector<vector<int>>& m){
     }
 }
 void infect(vector<vector<int>>& m, int i, int j, int N, int M){
-    if(i < 0 || i >= N || j < 0 || j > M || m[i][j] == 1){
+    if(i < 0 || i >= N || j < 0 || j > M || m[i][j] != 1){
         return;
     }
     m[i][j] = 2;
