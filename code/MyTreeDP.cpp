@@ -3,13 +3,14 @@
 using namespace std;
 
 // 二叉树节点间的最大距离问题
-class Node {
-public:
-    Node(int val) : value(val) { }
-    int value;
-    Node* left;
-    Node* right;
-};
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), righ(right）{}
+ };
 
 class Info {
 public:
@@ -17,23 +18,25 @@ public:
     int maxDistance;
     int height;
 };
-
-Info process(Node* x) {
-    if (x == nullptr) {
-        return Info(0, 0);
+Info process(TreeNode* root){
+    if(root == nullptr){
+        return Info(0,0);
     }
-    Info leftInfo = process(x->left);
-    Info rightInfo = process(x->right);
-    // info
+    Info leftInfo = process(root->left);
+    Info rightInfo = process(root->right);
+    // Info
     int p1 = leftInfo.maxDistance;
     int p2 = rightInfo.maxDistance;
-    int p3 = leftInfo.height + 1 + rightInfo.height;
-    int maxDistacne = max(p3, max(p1, p2));
+    int p3 = leftInfo.height + rightInfo.height + 1;
+    int maxDistance = max(p3, max(p1, p2));
     int height = max(leftInfo.height, rightInfo.height) + 1;
-    return Info(maxDistacne, height);
+    return Info(maxDistance, height);
 }
-int maxDistance(Node* head) {
-    return process(head).maxDistance;
+int diameterOfBinaryTree(TreeNode* root) {
+    if(root == nullptr){
+        return 0;
+    }
+    return process(root).maxDistance - 1;
 }
 
 
